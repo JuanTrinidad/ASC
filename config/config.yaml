@@ -1,0 +1,25 @@
+###
+# INPUT FILES
+##
+input_files:
+  all_sequence_fasta: 'genome_data_sets/query_proteomes/fasta_files/TriTrypDB-63_All_species_clean.fa'
+  header_to_uniprot: 'mandatory_files/fasta_header_to_uniprot.tsv'
+  ortholog_group_to_geneID: 'mandatory_files/Ortholog_group_to_geneID.tsv'
+  
+  
+####
+# after creating the mmseqs2 db from the query protein sequences we reduce the database by clustering
+####
+mmseq2_query_sequences_clustering:
+  mmseqs2_cluster_module: 'cluster' #cluster, linclust, easy-linclust
+  cluster_mode: 0
+  minimum_sequence_identity: 0.9
+  minimum_coverage: 0.7
+  coverage_mode: 0
+  
+downloading_from_AFDB:
+  threads: 40
+  retries: 3
+  
+pLDDT_mean_calculation:
+  threads: 40

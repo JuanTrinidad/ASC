@@ -1,0 +1,128 @@
+###################
+# LIBRARIES
+###################
+import pandas as pd
+import glob
+
+##############
+# CONFIG
+##############
+
+configfile: "config/config.yaml"
+
+#############
+# FILES
+############
+
+#-------------------------------------------------------
+#starting fasta file
+#-------------------------------------------------------
+initial_fasta_file_name = config['input_files']['all_sequence_fasta'].split('/')[-1]
+print('Fasta file:\n' ,initial_fasta_file_name, '\n')
+#-------------------------------------------------------
+
+
+
+
+#-------------------------------------------------------
+# model organisms  
+#-------------------------------------------------------
+model_organisms_files = glob.glob('genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/*')
+model_organisms_files_final = [file.split('/')[-1] for file in model_organisms_files]
+
+#individual org db files
+model_organisms_files_final_db = [file.split('/')[-1][:-4] for file in model_organisms_files]
+
+print('This are the model organisms files provided:')
+for file in model_organisms_files:
+    print(file.split('/')[-1] )
+    
+#-------------------------------------------------------
+    
+    
+    
+
+#-------------------------------------------------------
+#creating path to control data download
+#-------------------------------------------------------
+df_UNIPROT = pd.read_csv('mandatory_files/fasta_header_to_uniprot.tsv', sep='\t', header=None, names=['GeneID', 'UNIPROT'])
+pdb_files = [f'AF-{UNIPROTaccession}-F1-model_v4.pdb' for UNIPROTaccession in df_UNIPROT.UNIPROT.unique()]
+
+#full path
+pdb_files_full_path = expand('genome_data_sets/query_proteomes/pdb_files/prot_structure_download_from_AlphaFoldDB/{pdb_files}', pdb_files = pdb_files)
+#-------------------------------------------------------
+
+
+
+
+
+
+rule all:
+  input: 'genome_data_sets/query_proteomes/fasta_files/orthoMCL_groups_to_be_modelated.fa'
+  
+  
+####################################################
+#
+#
+# Obtaining all availbale structure data
+#
+#
+####################################################
+
+#################
+# DOWNLOADING FROM ALPHA FOLD DB
+#################
+
+rule download_structure_files_from_alphafold_DB:
+  input:
+    config['input_files']['header_to_uniprot']
+  output: 
+    #pdb_files_full_path, #esto es necesario despues descomentar
+    touch('tmp/download_finished.out')
+  retries: 
+    config['downloading_from_AFDB']['retries']
+  threads:
+    config['downloading_from_AFDB']['threads']
+  conda:
+    'envs/env_nameconverter_and_AFDBdownload.yaml'
+  shell:
+    'python3 Python_scripts/1_download_prot_struct_from_AFDB.py --file1 {input} --threads {threads}'
+    
+
+################
+# Calculation of pLDDT mean to use as filter to select representitative structure in cluster
+###############
+
+rule pLDDT_mean_calculation:
+  input: 
+    'tmp/download_finished.out'
+  output: 
+    'report_files/protein_structure_pLDDT_mean.tsv'
+  threads: 
+    config['pLDDT_mean_calculation']['threads']
+  conda:
+    'envs/pLDDT_mean_calc.yaml'
+  shell:
+    'python3 Python_scripts/3_pLDDT_mean_calculation-multiprocess.py --output {output} --threads {threads}'
+    
+
+########################
+# CREATING REPORTS AND FASTA TO BE MODELATED
+########################
+
+rule ortho_MCL_modelated_and_fasta_for_AF:
+  input: 
+    file1 = 'report_files/protein_structure_pLDDT_mean.tsv',
+    file2 = config['input_files']['all_sequence_fasta'],
+    file3 = config['input_files']['ortholog_group_to_geneID'],
+    fasta = config['input_files']['header_to_uniprot']
+  output: 
+    fastaout = 'genome_data_sets/query_proteomes/fasta_files/orthoMCL_groups_to_be_modelated.fa',
+    out = 'report_files/ortholog_groups_structure_stats.tsv',
+    outstats= 'report_files/ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv'
+  conda:
+    'envs/pLDDT_mean_calc.yaml'
+  shell:
+    'python3 Python_scripts/4_assigning_structure_to_orthoMCL_group.py --file1 {input.file1} --file2 {input.file2} --file3 {input.file3} --initialfasta {input.fasta} --outputfasta {output.fastaout} --output {output.out} --outputstats {output.outstats}'
+    
+    
