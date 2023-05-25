@@ -56,10 +56,12 @@ pdb_files_full_path = expand('genome_data_sets/query_proteomes/pdb_files/prot_st
 
 
 
-
 rule all:
-  input: 'genome_data_sets/query_proteomes/fasta_files/orthoMCL_groups_to_be_modelated.fa'
-  
+  input: 
+    expand('report_files/reciprocal_best_hit/cluster_representer_vs_{organisms}', organisms = [file[:-4] for file in model_organisms_files_final])
+ 
+#    expand('genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}', organisms = [file[:-4] for file in model_organisms_files_final]),
+#    'report_files/ortholog_groups_structure_stats.tsv',   
   
 ####################################################
 #
@@ -107,22 +109,103 @@ rule pLDDT_mean_calculation:
     
 
 ########################
-# CREATING REPORTS AND FASTA TO BE MODELATED
+# CREATING REPORTS 
 ########################
 
-rule ortho_MCL_modelated_and_fasta_for_AF:
+rule ortho_MCL_modelated_report:
   input: 
     file1 = 'report_files/protein_structure_pLDDT_mean.tsv',
-    file2 = config['input_files']['all_sequence_fasta'],
-    file3 = config['input_files']['ortholog_group_to_geneID'],
-    fasta = config['input_files']['header_to_uniprot']
+    file2 = config['input_files']['header_to_uniprot'],
+    file3 = config['input_files']['ortholog_group_to_geneID']
+    
   output: 
-    fastaout = 'genome_data_sets/query_proteomes/fasta_files/orthoMCL_groups_to_be_modelated.fa',
-    out = 'report_files/ortholog_groups_structure_stats.tsv',
-    outstats= 'report_files/ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv'
+    out = 'report_files/ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv',
+    outstats= 'report_files/ortholog_groups_structure_stats.tsv'
   conda:
     'envs/pLDDT_mean_calc.yaml'
   shell:
-    'python3 Python_scripts/4_assigning_structure_to_orthoMCL_group.py --file1 {input.file1} --file2 {input.file2} --file3 {input.file3} --initialfasta {input.fasta} --outputfasta {output.fastaout} --output {output.out} --outputstats {output.outstats}'
+    'python3 Python_scripts/4_assigning_structure_to_orthoMCL_group.py --file1 {input.file1} --file2 {input.file2} --file3 {input.file3} --output {output.out} --outputstats {output.outstats}'
     
     
+
+####################################
+# SELECTED STRUCTURES TO CREATE DB
+####################################
+
+rule cluster_representer_protein_structures:
+  input: 
+    'report_files/ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv'
+  output: 
+    touch('tmp/files_copied.done')
+  conda:
+    'envs/env_nameconverter_and_AFDBdownload.yaml'
+  threads: 40
+  shell:
+    'python3 Python_scripts/6_cluster_representative_protein_structures_selection_to_db.py --file1 {input} --threads {threads}'
+
+
+
+
+####################################################
+#
+#
+# FOLDSEEK
+#
+#
+####################################################
+
+##############
+# CREATING FOLDSEEK DB FOR MODEL ORGANISMS
+##############
+
+rule create_separates_DB_for_model_organisms:
+  input: 
+    'genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/{organisms}.tar'
+  output:
+    'genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}'
+  conda:
+    'envs/env_foldseek.yaml'
+  shell:
+    'foldseek createdb {input} {output}'
+
+
+
+
+##############
+# CREATING FOLDSEEK DB FROM DOWNLOADED PROTEIN STRUCTURES - CLUSTER REPRESENTERS
+##############
+
+
+rule foldseek_db_query_proteins:
+  input: 
+    'tmp/files_copied.done' #protein_files
+  output:
+    'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer'
+  conda:
+    'envs/env_foldseek.yaml'
+  shell:
+    'foldseek createdb genome_data_sets/query_proteomes/pdb_files/cluster_structure_representers/ {output}'
+
+
+##############################
+# RECIPROCAL BEST HIT
+##############################
+
+
+rule foldseek_reciprocal_best_hit:
+  input: 
+    query = 'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', 
+    subject = 'genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}.source'
+  output:
+    'report_files/reciprocal_best_hit/cluster_representer_vs_{organisms}'  
+  conda:
+    'envs/env_foldseek.yaml'
+  threads: 40
+  params:
+    sensitivity = config['reciprocal_best_hit_parameters']['sensitivity']
+  shell:
+    'foldseek rbh {input.query} genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{wildcards.organisms} {output} ./tmp --threads {threads} -s {params.sensitivity}'
+
+
+
+

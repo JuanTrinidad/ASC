@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[48]:
+# In[83]:
 
 
 import pandas as pd
@@ -17,8 +17,8 @@ parser = argparse.ArgumentParser()
 parser.add_argument('--file1', type=argparse.FileType('r'), help='Path to input file')
 parser.add_argument('--file2', type=argparse.FileType('r'), help='Path to input file')
 parser.add_argument('--file3', type=argparse.FileType('r'), help='Path to input file')
-parser.add_argument('--initialfasta', type=argparse.FileType('r'), help='Path to input fasta file')
-parser.add_argument('--outputfasta', type=argparse.FileType('w'), help='Path to input fasta file')
+#parser.add_argument('--initialfasta', type=argparse.FileType('r'), help='Path to input fasta file')
+#parser.add_argument('--outputfasta', type=argparse.FileType('w'), help='Path to input fasta file')
 parser.add_argument('--output', type=argparse.FileType('w'), help='Path to output file')
 parser.add_argument('--outputstats', type=argparse.FileType('w'), help='Path to output file')
 
@@ -30,12 +30,12 @@ args = parser.parse_args()
 
 
 
-file2 = args.file1.name
-file3 = args.file2.name
-file4 = args.file3.name
+file1 = args.file1.name
+file2 = args.file2.name
+file3 = args.file3.name
 
-file_fasta = args.initialfasta.name
-file_fasta_output = args.outputfasta.name
+#file_fasta = args.initialfasta.name
+#file_fasta_output = args.outputfasta.name
 
 
 output = args.output.name
@@ -49,20 +49,20 @@ output_info = args.outputstats.name
 
 
 # 
-# file2 = '../report_files/protein_structure_pLDDT_mean.tsv'
-# file3 = '../mandatory_files/fasta_header_to_uniprot.tsv'
-# file4 = '../mandatory_files/Ortholog_group_to_geneID.tsv'
+# file1 = '../report_files/protein_structure_pLDDT_mean.tsv'
+# file2 = '../mandatory_files/fasta_header_to_uniprot.tsv'
+# file3 = '../mandatory_files/Ortholog_group_to_geneID.tsv'
 # 
-# file_fasta = '../genome_data_sets/query_proteomes/fasta_files/TriTrypDB-63_All_species_clean.fa'
-# file_fasta_output = '../genome_data_sets/query_proteomes/fasta_files/orthoMCL_groups_to_be_modelated.fa'
+# #file_fasta = '../genome_data_sets/query_proteomes/fasta_files/TriTrypDB-63_All_species_clean.fa'
+# #file_fasta_output = '../genome_data_sets/query_proteomes/fasta_files/orthoMCL_groups_to_be_modelated.fa'
 # 
 # output_info = '../report_files/ortholog_groups_structure_stats.tsv'
 # output = '../report_files/ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv'
 
-# In[67]:
+# In[85]:
 
 
-df_pLDDT = pd.read_csv(file2, 
+df_pLDDT = pd.read_csv(file1, 
                        sep='\t', 
                        header=None, 
                        names = ['uniprot', 'pLDDT_mean'])
@@ -70,20 +70,20 @@ df_pLDDT = pd.read_csv(file2,
 #print(df_pLDDT.shape)
 
 
-# In[68]:
+# In[86]:
 
 
-df_geneId_uniprot = pd.read_csv(file3, 
+df_geneId_uniprot = pd.read_csv(file2, 
                        sep='\t', 
                        names = ['Gene ID', 'uniprot'])
 
 #print(df_geneId_uniprot.shape)
 
 
-# In[69]:
+# In[87]:
 
 
-df_orthologG = pd.read_csv(file4, 
+df_orthologG = pd.read_csv(file3, 
                        sep='\t', 
                        names = ['Ortholog_Group', 'Gene ID'])
 
@@ -103,7 +103,7 @@ df_orthologG = pd.read_csv(file4,
 
 
 
-# In[70]:
+# In[88]:
 
 
 # uno los DF para agregar a los cluster el codigo uniprot y con eso agregar el valor promedio de pLDDT
@@ -119,7 +119,7 @@ df_merged = (df_geneId_uniprot
 
 
 
-# In[76]:
+# In[89]:
 
 
 df_orthologG_plus_structure = df_orthologG.merge(df_merged, left_on='Gene ID', right_on='Gene ID', how='left')
@@ -138,11 +138,11 @@ df_orthologG_plus_structure = df_orthologG_plus_structure.drop_duplicates(keep='
 
 
 
-# In[83]:
+# In[90]:
 
 
 print('Total number of otholog groups:', df_orthologG_plus_structure.Ortholog_Group.nunique())
-print('The number of otholog groups with protein structure assigned are:', df_orthologG_plus_structure.dropna(subset=['uniprot']).Ortholog_Group.nunique())
+print('Amount of otholog groups with protein structure assigned:', df_orthologG_plus_structure.dropna(subset=['uniprot']).Ortholog_Group.nunique())
 print('Fraction:',  round(df_orthologG_plus_structure.dropna(subset=['uniprot']).Ortholog_Group.nunique() / df_orthologG.Ortholog_Group.nunique(), 3) )
 
 
@@ -158,7 +158,7 @@ print('Fraction:',  round(df_orthologG_plus_structure.dropna(subset=['uniprot'])
 
 
 
-# In[84]:
+# In[91]:
 
 
 #csv output info
@@ -169,7 +169,7 @@ print('Fraction:',  round(df_orthologG_plus_structure.dropna(subset=['uniprot'])
 )
 
 
-# In[85]:
+# In[92]:
 
 
 
@@ -187,32 +187,10 @@ df_orthologG_plus_structure = (
 df_orthologG_plus_structure.to_csv(output, sep='\t',index=False)
 
 
-# # Creating fasta file for no modelated proteins 
-
-# In[86]:
+# In[ ]:
 
 
-from Bio import SeqIO
 
-
-# In[87]:
-
-
-to_be_modelated = df_orthologG_plus_structure[df_orthologG_plus_structure['uniprot'].isna()]['Gene ID'].unique()
-
-
-# In[89]:
-
-
-with open(file_fasta, "r") as input_file:
-    
-    with open(file_fasta_output, "w") as output_file:
-        
-        for record in SeqIO.parse(input_file, "fasta"):
-            
-            if record.id in to_be_modelated:
-                
-                SeqIO.write(record, output_file, "fasta")
 
 
 # In[ ]:

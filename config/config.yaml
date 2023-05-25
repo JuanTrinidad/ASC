@@ -23,3 +23,8 @@ downloading_from_AFDB:
   
 pLDDT_mean_calculation:
   threads: 40
+  
+  
+  
+reciprocal_best_hit_parameters:
+  sensitivity: 7.5 #1.0 , 4.0 , 7.5
