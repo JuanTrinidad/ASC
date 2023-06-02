@@ -54,11 +54,20 @@ pdb_files_full_path = expand('genome_data_sets/query_proteomes/pdb_files/prot_st
 
 
 
+# name="some/file.txt" if config["condition"] else "other/file.txt"
 
+#print('protein_sequences_from_cluster_wo_structure_in_AFDB.fasta' if config['fasta_file_of_non_modelated_clusters']['create_fasta_file'] else 'mandatory_files/fasta_header_to_uniprot.tsv')
+optional_file = 'protein_sequences_from_cluster_wo_structure_in_AFDB.fasta' if config['fasta_file_of_non_modelated_clusters']['create_fasta_file'] else 'mandatory_files/fasta_header_to_uniprot.tsv'
 
 rule all:
   input: 
+    expand('report_files/reciprocal_best_hit_TSV/cluster_representer_vs_{organisms}.tsv', organisms = [file[:-4] for file in model_organisms_files_final]), 
     expand('report_files/reciprocal_best_hit/cluster_representer_vs_{organisms}', organisms = [file[:-4] for file in model_organisms_files_final])
+    #optional_file,
+    #'genome_data_sets/subject_proteomes/foldseek_data_base/all_org_DB/all_model_organisms_DB'
+    
+    
+    
  
 #    expand('genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}', organisms = [file[:-4] for file in model_organisms_files_final]),
 #    'report_files/ortholog_groups_structure_stats.tsv',   
@@ -146,6 +155,27 @@ rule cluster_representer_protein_structures:
 
 
 
+#########################################
+# CREATE FASTA FOR NON MODELATED CLUSTERS
+#########################################
+
+rule fasta_of_orthoGroups_without_structure_in_AFDB:
+  input: 
+    original_fasta = 'genome_data_sets/query_proteomes/fasta_files/TriTrypDB-63_All_species_clean.fa',
+    report_ortho_g = 'report_files/ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv',
+    ortho_info = 'mandatory_files/Ortholog_group_to_geneID.tsv'    
+  output:
+    output_fasta_file = 'protein_sequences_from_cluster_wo_structure_in_AFDB.fasta'
+  conda:
+    'envs/pLDDT_mean_calc.yaml'
+  params:
+    OG_size = config['fasta_file_of_non_modelated_clusters']['ortholog_group_above_this_num_of_members']
+  shell:
+    'python3 Python_scripts/7_fasta_file_creation.py --input_fasta_file {input.original_fasta} --report_ortho_g {input.report_ortho_g} --ortho_info {input.ortho_info} --ortho_group_size {params.OG_size} --output_fasta_file {output}'
+
+
+
+
 ####################################################
 #
 #
@@ -155,7 +185,7 @@ rule cluster_representer_protein_structures:
 ####################################################
 
 ##############
-# CREATING FOLDSEEK DB FOR MODEL ORGANISMS
+# CREATING FOLDSEEK DB FOR EACH MODEL ORGANISMS
 ##############
 
 rule create_separates_DB_for_model_organisms:
@@ -168,7 +198,19 @@ rule create_separates_DB_for_model_organisms:
   shell:
     'foldseek createdb {input} {output}'
 
+##############
+# CREATING FOLDSEEK DB FOR ALL MODEL ORGANISMS
+##############
 
+rule create_single_DB_for_model_organisms:
+  input: 
+    model_organisms_files
+  output:
+    'genome_data_sets/subject_proteomes/foldseek_data_base/all_org_DB/all_model_organisms_DB'
+  conda:
+    'envs/env_foldseek.yaml'
+  shell:
+    'foldseek createdb genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/ {output}'
 
 
 ##############
@@ -202,10 +244,71 @@ rule foldseek_reciprocal_best_hit:
     'envs/env_foldseek.yaml'
   threads: 40
   params:
-    sensitivity = config['reciprocal_best_hit_parameters']['sensitivity']
+    sensitivity = config['reciprocal_best_hit_parameters']['sensitivity'],
+    cov_mode = config['reciprocal_best_hit_parameters']['cov_mode'],
+    coverage = config['reciprocal_best_hit_parameters']['coverage']
   shell:
-    'foldseek rbh {input.query} genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{wildcards.organisms} {output} ./tmp --threads {threads} -s {params.sensitivity}'
+    'foldseek rbh {input.query} genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{wildcards.organisms} {output} ./tmp --threads {threads} -s {params.sensitivity} -c {params.coverage} -a'
+
+
+# --format-output query,target,fident,alnlen,mismatch,gapopen,qstart,qend,tstart,tend,evalue,bits,prob
+
+#rule foldseek_reciprocal_best_hit_compute_TMalign:
+#  input: 
+#    query = 'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', 
+#    subject = 'genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}.source',
+#    result = 'report_files/reciprocal_best_hit/cluster_representer_vs_{organisms}' 
+#  output:
+#     'report_files/reciprocal_best_hit_TMalign/cluster_representer_vs_{organisms}_TMalign' 
+#  conda:
+#    'envs/env_foldseek.yaml'
+#  threads: 40
+#  shell:
+#    'foldseek aln2tmscore {input.query} genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{wildcards.organisms} {input.result} {output}'
+    #'foldseek rbh {input.query} genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{wildcards.organisms} {output} ./tmp --threads {threads} -s {params.sensitivity} -c {params.coverage}'
 
 
 
 
+##############################
+# EXTRACT TSV FROM RBH
+##############################
+
+
+rule foldseek_reciprocal_best_hit_extract_result_tsv:
+  input: 
+    query = 'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', 
+    #subject = 'genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}.source',
+    table = expand('report_files/reciprocal_best_hit/cluster_representer_vs_{organisms}', organisms = [file[:-4] for file in model_organisms_files_final])
+  output:
+    'report_files/reciprocal_best_hit_TSV/cluster_representer_vs_{organisms}.tsv'  
+  conda:
+    'envs/env_foldseek.yaml'
+  threads: 40
+  shell:
+    'foldseek createtsv {input.query} genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{wildcards.organisms} report_files/reciprocal_best_hit/cluster_representer_vs_{wildcards.organisms} {output}'
+
+
+
+    
+
+##############################
+# FOLDSEEK SEARCH
+##############################
+
+
+rule foldseek_search:
+  input: 
+    query = 'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', 
+    subject = 'genome_data_sets/subject_proteomes/foldseek_data_base/all_org_DB/all_model_organisms_DB'
+  output:
+    'report_files/foldseek_search/cluster_representer_vs_singleDB_all_model_org'  
+  conda:
+    'envs/env_foldseek.yaml'
+  threads: 40
+  params:
+    sensitivity = config['foldseek_search_reciprocal_best_hit_parameters']['sensitivity'],
+    cov_mode = config['foldseek_search_reciprocal_best_hit_parameters']['cov_mode'],
+    coverage = config['foldseek_search_reciprocal_best_hit_parameters']['coverage']
+  shell:
+    'foldseek easy-search {input.query} genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{wildcards.organisms} {output} ./tmp --threads {threads} -s {params.sensitivity} -c {params.coverage} -a'

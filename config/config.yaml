@@ -1,6 +1,19 @@
 ###
 # INPUT FILES
 ##
+
+#-------------------------------------------------------
+# optional output files
+#-------------------------------------------------------
+
+fasta_file_of_non_modelated_clusters: 
+  create_fasta_file: True
+  ortholog_group_above_this_num_of_members: 1
+
+#-------------------------------------------------------
+
+
+
 input_files:
   all_sequence_fasta: 'genome_data_sets/query_proteomes/fasta_files/TriTrypDB-63_All_species_clean.fa'
   header_to_uniprot: 'mandatory_files/fasta_header_to_uniprot.tsv'
@@ -27,4 +40,12 @@ pLDDT_mean_calculation:
   
   
 reciprocal_best_hit_parameters:
-  sensitivity: 7.5 #1.0 , 4.0 , 7.5
+  sensitivity: 9.5
+  cov_mode: 0
+  coverage: 0
+  
+  
+foldseek_search_reciprocal_best_hit_parameters:
+  sensitivity: 9.5
+  cov_mode: 0
+  coverage: 0
