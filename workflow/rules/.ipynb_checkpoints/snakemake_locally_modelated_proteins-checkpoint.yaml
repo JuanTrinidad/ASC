@@ -1,0 +1,40 @@
+
+
+
+
+
+
+
+configfile: "../config/config.yaml"
+
+
+
+
+
+rule all:
+  input: 'report/protein_structure_pLDDT_mean_locally_modelated_prot.tsv'
+
+
+
+rule LMP_pLDDT_mean_calculation:
+  input: 'tmp/download_finished.out'
+  output: 'report/protein_structure_pLDDT_mean_locally_modelated_prot.tsv'
+  threads: config['pLDDT_mean_calculation']['threads']
+  conda: '../envs/pLDDT_mean_calc.yaml'
+  shell: 'python3 scripts/3_pLDDT_mean_calculation-multiprocess-LMP.py --path_to_input_pdb_files genome_data_sets/query_proteomes/pdb_files/locally_modelated_proteins --output {output} --threads {threads}'
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

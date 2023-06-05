@@ -64,7 +64,9 @@ rule all:
     expand('../results/reciprocal_best_hit_TSV/cluster_representer_vs_{organisms}.tsv', organisms = [file[:-4] for file in model_organisms_files_final]), 
     expand('../results/reciprocal_best_hit/cluster_representer_vs_{organisms}', organisms = [file[:-4] for file in model_organisms_files_final]),
     '../results/foldseek_search/cluster_representer_vs_SwissProt.index',
-    '../results/foldseek_search_TSV/cluster_representer_vs_SwissProt.tsv'
+    '../results/foldseek_search_TSV/cluster_representer_vs_SwissProt.tsv',
+    '../results/Gene_annotation_info_from_uniprot_model_spp.tsv'
+    #expand('genome_data_sets/subject_proteomes/annotation_info/{organisms}.tsv', organisms = [file[:-4] for file in model_organisms_files_final])
     #optional_file,
     #'genome_data_sets/subject_proteomes/foldseek_data_base/all_org_DB/all_model_organisms_DB'
     
@@ -343,3 +345,28 @@ rule foldseek_search_ SwissProt_extract_result_tsv:
   threads: 40
   shell:
     'foldseek createtsv {input.query} {input.subject} ../results/foldseek_search/cluster_representer_vs_SwissProt {output} ./tmp'
+
+
+################################
+# PROTEOMES ANNOTATION DATA FROM UNIPROT
+#
+#################################
+
+rule download_proteomes_annotation_info:
+  input: 'genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/{UP}_{num}_{spp}_{v}.tar'
+  output: 'genome_data_sets/subject_proteomes/annotation_info/{UP}_{num}_{spp}_{v}.gz'
+  shell: 
+    'curl -H "Accept: text/plain; format=tsv" "https://rest.uniprot.org/uniprotkb/stream?compressed=true&fields=accession%2Cid%2Cprotein_name%2Cgene_names%2Corganism_name%2Corganism_id%2Cec%2Ccc_function%2Ccc_pathway%2Cgo_p%2Cgo_c%2Cgo%2Cgo_f%2Cgo_id%2Ccc_subcellular_location%2Ccc_domain%2Cft_domain%2Cprotein_families%2Cxref_orthodb%2Cxref_eggnog&format=tsv&query=%28{wildcards.UP}%29" --output {output}'
+
+
+rule unzip_proteomes_annotation_info:
+  input: 'genome_data_sets/subject_proteomes/annotation_info/{organisms}.gz'
+  output: 'genome_data_sets/subject_proteomes/annotation_info/{organisms}.tsv'
+  shell: 'gzip -c -d {input} > {output}'
+
+
+rule concat_TSV_in_one_file:
+  input: expand('genome_data_sets/subject_proteomes/annotation_info/{organisms}.tsv', organisms = [file[:-4] for file in model_organisms_files_final])
+  output: '../results/Gene_annotation_info_from_uniprot_model_spp.tsv'
+  run:
+    pd.concat([pd.read_csv(file, sep="\t",low_memory=False) for file in input]).to_csv(output[0])
