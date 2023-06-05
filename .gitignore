@@ -4,5 +4,5 @@ workflow/tmp/
 workflow/.*
 workflow/report_files/
 workflow/nohup*
-workflow/results/
+results/
 workflow/protein_data_bases/
