@@ -1,0 +1,4 @@
+channels:
+  - conda-forge
+dependencies:
+  - mmseqs2=14.7e284

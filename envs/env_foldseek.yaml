@@ -1,6 +1,0 @@
-channels:
-  - conda-forge
-  - bioconda
-
-dependencies:
-  - foldseek=6.29e2557

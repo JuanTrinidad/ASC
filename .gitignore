@@ -1,0 +1,8 @@
+#ignore genome data
+workflow/genome_data_sets/
+workflow/tmp/
+workflow/.*
+workflow/report_files/
+workflow/nohup*
+workflow/results/
+workflow/protein_data_bases/

@@ -1,0 +1,345 @@
+###################
+# LIBRARIES
+###################
+import pandas as pd
+import glob
+
+##############
+# CONFIG
+##############
+
+configfile: "config/config.yaml"
+
+#############
+# FILES
+############
+
+#-------------------------------------------------------
+#starting fasta file
+#-------------------------------------------------------
+initial_fasta_file_name = config['input_files']['all_sequence_fasta'].split('/')[-1]
+print('Fasta file:\n' ,initial_fasta_file_name, '\n')
+#-------------------------------------------------------
+
+
+
+
+#-------------------------------------------------------
+# model organisms  
+#-------------------------------------------------------
+model_organisms_files = glob.glob('genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/*')
+model_organisms_files_final = [file.split('/')[-1] for file in model_organisms_files]
+
+#individual org db files
+model_organisms_files_final_db = [file.split('/')[-1][:-4] for file in model_organisms_files]
+
+print('This are the model organisms files provided:')
+for file in model_organisms_files:
+    print(file.split('/')[-1] )
+    
+#-------------------------------------------------------
+    
+    
+    
+
+#-------------------------------------------------------
+#creating path to control data download
+#-------------------------------------------------------
+df_UNIPROT = pd.read_csv('config/mandatory_files/fasta_header_to_uniprot.tsv', sep='\t', header=None, names=['GeneID', 'UNIPROT'])
+pdb_files = [f'AF-{UNIPROTaccession}-F1-model_v4.pdb' for UNIPROTaccession in df_UNIPROT.UNIPROT.unique()]
+
+#full path
+pdb_files_full_path = expand('genome_data_sets/query_proteomes/pdb_files/prot_structure_download_from_AlphaFoldDB/{pdb_files}', pdb_files = pdb_files)
+#-------------------------------------------------------
+
+
+
+# name="some/file.txt" if config["condition"] else "other/file.txt"
+
+#print('protein_sequences_from_cluster_wo_structure_in_AFDB.fasta' if config['fasta_file_of_non_modelated_clusters']['create_fasta_file'] else 'config/mandatory_files/fasta_header_to_uniprot.tsv')
+optional_file = 'protein_sequences_from_cluster_wo_structure_in_AFDB.fasta' if config['fasta_file_of_non_modelated_clusters']['create_fasta_file'] else 'config/mandatory_files/fasta_header_to_uniprot.tsv'
+
+rule all:
+  input: 
+    expand('results/reciprocal_best_hit_TSV/cluster_representer_vs_{organisms}.tsv', organisms = [file[:-4] for file in model_organisms_files_final]), 
+    expand('results/reciprocal_best_hit/cluster_representer_vs_{organisms}', organisms = [file[:-4] for file in model_organisms_files_final]),
+    'results/foldseek_search/cluster_representer_vs_SwissProt.index',
+    'results/foldseek_search_TSV/cluster_representer_vs_SwissProt.tsv'
+    #optional_file,
+    #'genome_data_sets/subject_proteomes/foldseek_data_base/all_org_DB/all_model_organisms_DB'
+    
+    
+    
+ 
+#    expand('genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}', organisms = [file[:-4] for file in model_organisms_files_final]),
+#    'report/ortholog_groups_structure_stats.tsv',   
+  
+####################################################
+#
+#
+# Obtaining all availbale structure data
+#
+#
+####################################################
+
+#################
+# DOWNLOADING FROM ALPHA FOLD DB
+#################
+
+rule download_structure_files_from_alphafold_DB:
+  input:
+    config['input_files']['header_to_uniprot']
+  output: 
+    #pdb_files_full_path, #esto es necesario despues descomentar
+    touch('tmp/download_finished.out')
+  retries: 
+    config['downloading_from_AFDB']['retries']
+  threads:
+    config['downloading_from_AFDB']['threads']
+  conda:
+    'envs/env_nameconverter_and_AFDBdownload.yaml'
+  shell:
+    'python3 scripts/1_download_prot_struct_from_AFDB.py --file1 {input} --threads {threads}'
+    
+
+################
+# Calculation of pLDDT mean to use as filter to select representitative structure in cluster
+###############
+
+rule pLDDT_mean_calculation:
+  input: 
+    'tmp/download_finished.out'
+  output: 
+    'report/protein_structure_pLDDT_mean.tsv'
+  threads: 
+    config['pLDDT_mean_calculation']['threads']
+  conda:
+    'envs/pLDDT_mean_calc.yaml'
+  shell:
+    'python3 scripts/3_pLDDT_mean_calculation-multiprocess.py --output {output} --threads {threads}'
+    
+
+########################
+# CREATING REPORTS 
+########################
+
+rule ortho_MCL_modelated_report:
+  input: 
+    file1 = 'report/protein_structure_pLDDT_mean.tsv',
+    file2 = config['input_files']['header_to_uniprot'],
+    file3 = config['input_files']['ortholog_group_to_geneID']
+    
+  output: 
+    out = 'report/ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv',
+    outstats= 'report/ortholog_groups_structure_stats.tsv'
+  conda:
+    'envs/pLDDT_mean_calc.yaml'
+  shell:
+    'python3 scripts/4_assigning_structure_to_orthoMCL_group.py --file1 {input.file1} --file2 {input.file2} --file3 {input.file3} --output {output.out} --outputstats {output.outstats}'
+    
+    
+
+####################################
+# SELECTED STRUCTURES TO CREATE DB
+####################################
+
+rule cluster_representer_protein_structures:
+  input: 
+    'report/ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv'
+  output: 
+    touch('tmp/files_copied.done')
+  conda:
+    'envs/env_nameconverter_and_AFDBdownload.yaml'
+  threads: 40
+  shell:
+    'python3 scripts/6_cluster_representative_protein_structures_selection_to_db.py --file1 {input} --threads {threads}'
+
+
+
+
+#########################################
+# CREATE FASTA FOR NON MODELATED CLUSTERS
+#########################################
+
+rule fasta_of_orthoGroups_without_structure_in_AFDB:
+  input: 
+    original_fasta = 'genome_data_sets/query_proteomes/fasta_files/TriTrypDB-63_All_species_clean.fa',
+    report_ortho_g = 'report/ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv',
+    ortho_info = 'config/mandatory_files/Ortholog_group_to_geneID.tsv'    
+  output:
+    output_fasta_file = 'protein_sequences_from_cluster_wo_structure_in_AFDB.fasta'
+  conda:
+    'envs/pLDDT_mean_calc.yaml'
+  params:
+    OG_size = config['fasta_file_of_non_modelated_clusters']['ortholog_group_above_this_num_of_members']
+  shell:
+    'python3 scripts/7_fasta_file_creation.py --input_fasta_file {input.original_fasta} --report_ortho_g {input.report_ortho_g} --ortho_info {input.ortho_info} --ortho_group_size {params.OG_size} --output_fasta_file {output}'
+
+
+
+
+####################################################
+#
+#
+# FOLDSEEK
+#
+#
+####################################################
+
+##############
+# CREATING FOLDSEEK DB FOR EACH MODEL ORGANISMS
+##############
+
+rule create_separates_DB_for_model_organisms:
+  input: 
+    'genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/{organisms}.tar'
+  output:
+    'genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}'
+  conda:
+    'envs/env_foldseek.yaml'
+  shell:
+    'foldseek createdb {input} {output}'
+
+##############
+# CREATING FOLDSEEK DB FOR ALL MODEL ORGANISMS
+##############
+
+rule create_single_DB_for_model_organisms:
+  input: 
+    model_organisms_files
+  output:
+    'genome_data_sets/subject_proteomes/foldseek_data_base/all_org_DB/all_model_organisms_DB'
+  conda:
+    'envs/env_foldseek.yaml'
+  shell:
+    'foldseek createdb genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/ {output}'
+
+
+##############
+# CREATING FOLDSEEK DB FROM DOWNLOADED PROTEIN STRUCTURES - CLUSTER REPRESENTERS
+##############
+
+
+rule foldseek_db_query_proteins:
+  input: 
+    'tmp/files_copied.done' #protein_files
+  output:
+    'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer'
+  conda:
+    'envs/env_foldseek.yaml'
+  shell:
+    'foldseek createdb genome_data_sets/query_proteomes/pdb_files/cluster_structure_representers/ {output}'
+
+
+##############################
+# RECIPROCAL BEST HIT
+##############################
+
+
+rule foldseek_reciprocal_best_hit:
+  input: 
+    query = 'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', 
+    subject = 'genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}.source'
+  output:
+    'results/reciprocal_best_hit/cluster_representer_vs_{organisms}'  
+  conda:
+    'envs/env_foldseek.yaml'
+  threads: 40
+  params:
+    sensitivity = config['reciprocal_best_hit_parameters']['sensitivity'],
+    cov_mode = config['reciprocal_best_hit_parameters']['cov_mode'],
+    coverage = config['reciprocal_best_hit_parameters']['coverage']
+  shell:
+    'foldseek rbh {input.query} genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{wildcards.organisms} {output} ./tmp --threads {threads} -s {params.sensitivity} -c {params.coverage} -a'
+
+
+# --format-output query,target,fident,alnlen,mismatch,gapopen,qstart,qend,tstart,tend,evalue,bits,prob
+
+#rule foldseek_reciprocal_best_hit_compute_TMalign:
+#  input: 
+#    query = 'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', 
+#    subject = 'genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}.source',
+#    result = 'results/reciprocal_best_hit/cluster_representer_vs_{organisms}' 
+#  output:
+#     'results/reciprocal_best_hit_TMalign/cluster_representer_vs_{organisms}_TMalign' 
+#  conda:
+#    'envs/env_foldseek.yaml'
+#  threads: 40
+#  shell:
+#    'foldseek aln2tmscore {input.query} genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{wildcards.organisms} {input.result} {output}'
+    #'foldseek rbh {input.query} genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{wildcards.organisms} {output} ./tmp --threads {threads} -s {params.sensitivity} -c {params.coverage}'
+
+
+
+
+##############################
+# EXTRACT TSV FROM RBH
+##############################
+
+
+rule foldseek_reciprocal_best_hit_extract_result_tsv:
+  input: 
+    query = 'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', 
+    #subject = 'genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}.source',
+    table = expand('results/reciprocal_best_hit/cluster_representer_vs_{organisms}', organisms = [file[:-4] for file in model_organisms_files_final])
+  output:
+    'results/reciprocal_best_hit_TSV/cluster_representer_vs_{organisms}.tsv'  
+  conda:
+    'envs/env_foldseek.yaml'
+  threads: 40
+  shell:
+    'foldseek createtsv {input.query} genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{wildcards.organisms} results/reciprocal_best_hit/cluster_representer_vs_{wildcards.organisms} {output}'
+
+
+
+    
+
+##############################
+# FOLDSEEK SEARCH
+##############################
+
+
+rule foldseek_search_ SwissProt:
+  input: 
+    query = 'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', 
+    subject = 'protein_data_bases/Swiss-Prot'
+  output:
+    'results/foldseek_search/cluster_representer_vs_SwissProt.index'  
+  conda:
+    'envs/env_foldseek.yaml'
+  threads: 40
+  params:
+    sensitivity = config['foldseek_search_against_SwissProt_parameters']['sensitivity'],
+    cov_mode = config['foldseek_search_against_SwissProt_parameters']['cov_mode'],
+    coverage = config['foldseek_search_against_SwissProt_parameters']['coverage'],
+    evalue = config['foldseek_search_against_SwissProt_parameters']['evalue']
+  shell:
+    'foldseek search \
+    {input.query} \
+    {input.subject} \
+    results/foldseek_search/cluster_representer_vs_SwissProt \
+    ./tmp \
+    --threads {threads} \
+    -s {params.sensitivity} \
+    -c {params.coverage} \
+    -a \
+    -e {params.evalue}'
+    
+    
+##############################
+# EXTRACT TSV FROM FOLDSEEK SEARCH
+##############################
+
+
+rule foldseek_search_ SwissProt_extract_result_tsv:
+  input: 
+    query = 'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', 
+    subject = 'protein_data_bases/Swiss-Prot',
+    table = 'results/foldseek_search/cluster_representer_vs_SwissProt.index'
+  output:
+     'results/foldseek_search_TSV/cluster_representer_vs_SwissProt.tsv'
+  conda:
+    'envs/env_foldseek.yaml'
+  threads: 40
+  shell:
+    'foldseek createtsv {input.query} {input.subject} results/foldseek_search/cluster_representer_vs_SwissProt {output} ./tmp'
