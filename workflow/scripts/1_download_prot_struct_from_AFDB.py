@@ -5,32 +5,12 @@
 
 
 import pandas as pd
-import argparse
 
-
-# In[ ]:
-
-
-parser = argparse.ArgumentParser()
-
-parser.add_argument('--file1', type=argparse.FileType('r'), help='Path to first input file')
-parser.add_argument('--threads', type=int, help='Number of threads INT')
-
-args = parser.parse_args()
-
-
-
-file1 = args.file1.name
-threads = args.threads
-
-
-# file1 = '../../reports_files/fasta_header_to_uniprot_used.tsv'
-# threads = 30
 
 # In[3]:
 
 
-df_clusters = pd.read_csv(file1, 
+df_clusters = pd.read_csv(snakemake.input[0], 
                           sep='\t', 
                           names=['cluster_representer', 'cluster_representer_UNIPROT_nafilled'])
 
@@ -81,7 +61,7 @@ if not os.path.exists(dest_dir):
     os.makedirs(dest_dir)
     
 # Crear un objeto ThreadPool con un número de hilos adecuado
-pool = ThreadPool(threads) # aquí se utiliza 4 hilos, pero esto se puede ajustar según el tamaño de su máquina
+pool = ThreadPool(snakemake.threads) # aquí se utiliza 4 hilos, pero esto se puede ajustar según el tamaño de su máquina
 
 #
 print('Downloading structures from AlphaFold Data Base.')

@@ -6,38 +6,20 @@
 
 import pandas as pd 
 from Bio.PDB import *
-import argparse
 import glob
 import multiprocessing
 
 
-# In[ ]:
-
-
-parser = argparse.ArgumentParser()
-
-parser.add_argument('--path_to_input_pdb_files', type=str, help='Directory containing pdb files')
-parser.add_argument('--output', type=argparse.FileType('w'), help='Path to output file')
-parser.add_argument('--threads', type=int, help='Number of threads INT')
-
-args = parser.parse_args()
-
-path = args.path_to_input_pdb_files
-output = args.output.name
-num_threads = args.threads
-
-
-# In[2]:
-#path = '../genome_data_sets/query_proteomes/pdb_files/locally_modelated_proteins'
-#output = '../report_files/protein_structure_pLDDT_mean_multi_prueba.tsv'
-#num_threads = 30
 
 print('Calculating pLDDT mean of protein structures')
 
 
 # In[ ]:
 
-lista_archivos = glob.glob(f'{path}/*.pdb')
+
+df_UNIPROT = pd.read_csv(snakemake.input.fasta_header_to_uniprot, sep='\t', header=None, names=['GeneID', 'UNIPROT'])
+
+lista_archivos = [f'genome_data_sets/query_proteomes/pdb_files/prot_structure_download_from_AlphaFoldDB/AF-{UNIPROTaccession}-F1-model_v4.pdb' for UNIPROTaccession in df_UNIPROT.UNIPROT.unique()]
 
 
 #output = '../report_files/protein_structure_pLDDT_mean_multi_prueba.tsv'
@@ -61,8 +43,8 @@ def Average(lst):
 def extract_values_from_PDB_files(PDBfile):
     
     PDBparser = PDBParser(PERMISSIVE = True, QUIET = True)
-
-    uniprot = PDBfile.split('/')[-1][-3:]
+    
+    uniprot = PDBfile.split('/')[-1].split('-')[1]
     
     data = PDBparser.get_structure(uniprot, PDBfile)
     
@@ -76,7 +58,7 @@ def extract_values_from_PDB_files(PDBfile):
 
 
 # In[6]:
-
+num_threads = snakemake.threads
 
 def main(num_threads):
     # Get a list of all the file names.
@@ -99,7 +81,7 @@ def main(num_threads):
 
     # return the final dictionary.
     df_output = pd.DataFrame.from_dict(final_dictionary, orient='index')
-    df_output.to_csv(output, sep='\t', header=None)
+    df_output.to_csv(snakemake.output[0], sep='\t', header=None)
     
     print('All calculations done')
 

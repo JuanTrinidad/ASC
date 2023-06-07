@@ -6,7 +6,6 @@
 
 import pandas as pd
 from Bio import SeqIO
-import argparse
 import os
 
 
@@ -21,12 +20,11 @@ import os
 
 #funtion to search into fasta file and create cluster fasta files
 
-def looking_in_fasta_file(name_geid_list, dest_dir, name_file, original_fasta_file):
+def looking_in_fasta_file(name_geid_list, dest_dir, name, original_fasta_file):
 
     with open(original_fasta_file, "r") as input_file:
         
         #dest_dir = '../../tmp/report_files/sequences_to_be_modelated/'
-        name =  dest_dir + name_file
         
         
         if not os.path.exists(dest_dir):
@@ -43,36 +41,23 @@ def looking_in_fasta_file(name_geid_list, dest_dir, name_file, original_fasta_fi
 
 # ## file import 
 
+# fasta_file_input = '../genome_data_sets/query_proteomes/fasta_files/TriTrypDB-63_All_species_clean.fa'
 # report_ortho_g = '../report_files/ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv'
 # ortho_info = '../mandatory_files/Ortholog_group_to_geneID.tsv'
 # output_fasta_file = 'algo.fasta'
-# fasta_file_input = '../genome_data_sets/query_proteomes/fasta_files/TriTrypDB-63_All_species_clean.fa'
 # ortho_group_size = 1
 
 # In[ ]:
 
 
-parser = argparse.ArgumentParser()
 
-parser.add_argument('--input_fasta_file', type=argparse.FileType('r'), help='Path to input genome_data_sets/query_proteomes/fasta_files/ file')
-parser.add_argument('--report_ortho_g', type=argparse.FileType('r'), help='Path to input report_files/ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv file')
-parser.add_argument('--ortho_info', type=argparse.FileType('r'), help='Path to input mandatory_files/Ortholog_group_to_geneID.tsv file')
-parser.add_argument('--output_fasta_file', type=argparse.FileType('w'), help='Path to output fasta file')
-parser.add_argument('--ortho_group_size', type=int, help='Ortholog number of members. Above this value will be selected for the fasta file')
-
-args = parser.parse_args()
+fasta_file_input = snakemake.input.original_fasta
+report_ortho_g = snakemake.input.report_ortho_g
+ortho_info = snakemake.input.ortho_info
 
 
-
-# In[ ]:
-
-
-fasta_file_input = args.input_fasta_file.name
-report_ortho_g = args.report_ortho_g.name
-ortho_info = args.ortho_info.name
-output_fasta_file = args.output_fasta_file.name
-
-ortho_group_size = args.ortho_group_size
+output_fasta_file = snakemake.output.output_fasta_file
+ortho_group_size = snakemake.params.OG_size
 
 
 # ## creating df 

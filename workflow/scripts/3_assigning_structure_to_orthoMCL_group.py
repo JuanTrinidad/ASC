@@ -5,41 +5,6 @@
 
 
 import pandas as pd
-import argparse
-
-
-# In[ ]:
-
-
-
-parser = argparse.ArgumentParser()
-
-parser.add_argument('--file1', type=argparse.FileType('r'), help='Path to input file')
-parser.add_argument('--file2', type=argparse.FileType('r'), help='Path to input file')
-parser.add_argument('--file3', type=argparse.FileType('r'), help='Path to input file')
-#parser.add_argument('--initialfasta', type=argparse.FileType('r'), help='Path to input fasta file')
-#parser.add_argument('--outputfasta', type=argparse.FileType('w'), help='Path to input fasta file')
-parser.add_argument('--output', type=argparse.FileType('w'), help='Path to output file')
-parser.add_argument('--outputstats', type=argparse.FileType('w'), help='Path to output file')
-
-args = parser.parse_args()
-
-
-
-# In[ ]:
-
-
-
-file1 = args.file1.name
-file2 = args.file2.name
-file3 = args.file3.name
-
-#file_fasta = args.initialfasta.name
-#file_fasta_output = args.outputfasta.name
-
-
-output = args.output.name
-output_info = args.outputstats.name
 
 
 # In[ ]:
@@ -62,7 +27,7 @@ output_info = args.outputstats.name
 # In[85]:
 
 
-df_pLDDT = pd.read_csv(file1, 
+df_pLDDT = pd.read_csv(snakemake.input.file1, 
                        sep='\t', 
                        header=None, 
                        names = ['uniprot', 'pLDDT_mean'])
@@ -73,7 +38,7 @@ df_pLDDT = pd.read_csv(file1,
 # In[86]:
 
 
-df_geneId_uniprot = pd.read_csv(file2, 
+df_geneId_uniprot = pd.read_csv(snakemake.input.file2, 
                        sep='\t', 
                        names = ['Gene ID', 'uniprot'])
 
@@ -83,7 +48,7 @@ df_geneId_uniprot = pd.read_csv(file2,
 # In[87]:
 
 
-df_orthologG = pd.read_csv(file3, 
+df_orthologG = pd.read_csv(snakemake.input.file3, 
                        sep='\t', 
                        names = ['Ortholog_Group', 'Gene ID'])
 
@@ -165,7 +130,7 @@ print('Fraction:',  round(df_orthologG_plus_structure.dropna(subset=['uniprot'])
 (df_orthologG_plus_structure
  .groupby('Ortholog_Group')['pLDDT_mean']
  .agg(['mean', 'median', 'min', 'max', 'std', 'skew'])
- .to_csv(output_info, sep='\t')
+ .to_csv(snakemake.output.outstats, sep='\t')
 )
 
 
@@ -184,7 +149,7 @@ df_orthologG_plus_structure = (
 )
 
 
-df_orthologG_plus_structure.to_csv(output, sep='\t',index=False)
+df_orthologG_plus_structure.to_csv(snakemake.output.out, sep='\t',index=False)
 
 
 # In[ ]:

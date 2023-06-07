@@ -6,26 +6,9 @@
 
 import pandas as pd 
 from Bio.PDB import *
-import argparse
 import glob
 import multiprocessing
 
-
-# In[ ]:
-
-
-parser = argparse.ArgumentParser()
-
-parser.add_argument('--output', type=argparse.FileType('w'), help='Path to output file')
-parser.add_argument('--threads', type=int, help='Number of threads INT')
-
-args = parser.parse_args()
-
-output = args.output.name
-num_threads = args.threads
-
-
-# In[2]:
 
 
 print('Calculating pLDDT mean of protein structures')
@@ -34,7 +17,7 @@ print('Calculating pLDDT mean of protein structures')
 # In[ ]:
 
 
-df_UNIPROT = pd.read_csv('mandatory_files/fasta_header_to_uniprot.tsv', sep='\t', header=None, names=['GeneID', 'UNIPROT'])
+df_UNIPROT = pd.read_csv(snakemake.input.fasta_header_to_uniprot, sep='\t', header=None, names=['GeneID', 'UNIPROT'])
 
 lista_archivos = [f'genome_data_sets/query_proteomes/pdb_files/prot_structure_download_from_AlphaFoldDB/AF-{UNIPROTaccession}-F1-model_v4.pdb' for UNIPROTaccession in df_UNIPROT.UNIPROT.unique()]
 
@@ -75,7 +58,7 @@ def extract_values_from_PDB_files(PDBfile):
 
 
 # In[6]:
-
+num_threads = snakemake.threads
 
 def main(num_threads):
     # Get a list of all the file names.
@@ -98,7 +81,7 @@ def main(num_threads):
 
     # return the final dictionary.
     df_output = pd.DataFrame.from_dict(final_dictionary, orient='index')
-    df_output.to_csv(output, sep='\t', header=None)
+    df_output.to_csv(snakemake.output[0], sep='\t', header=None)
     
     print('All calculations done')
 

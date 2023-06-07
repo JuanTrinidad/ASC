@@ -6,28 +6,16 @@
 
 import pandas as pd 
 from Bio.PDB import *
-import argparse
 import glob
 import multiprocessing
 
 
-# In[ ]:
+
+output = snakemake.output[0]
+num_threads = snakemake.threads
 
 
-parser = argparse.ArgumentParser()
-
-parser.add_argument('--path_to_input_pdb_files', type=str, help='Directory containing pdb files')
-parser.add_argument('--output', type=argparse.FileType('w'), help='Path to output file')
-parser.add_argument('--threads', type=int, help='Number of threads INT')
-
-args = parser.parse_args()
-
-path = args.path_to_input_pdb_files
-output = args.output.name
-num_threads = args.threads
-
-
-# path = '../genome_data_sets/query_proteomes/pdb_files/locally_modelated_proteins'
+path = snakemake.params.path
 # output = '../report/probandopLDDT.tsv'
 # num_threads = 30
 

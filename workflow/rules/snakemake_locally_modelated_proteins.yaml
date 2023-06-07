@@ -1,9 +1,12 @@
+###################
+# LIBRARIES
+###################
+import pandas as pd
+import glob
 
-
-
-
-
-
+##############
+# CONFIG
+##############
 
 configfile: "../config/config.yaml"
 
@@ -12,29 +15,44 @@ configfile: "../config/config.yaml"
 
 
 rule all:
-  input: 'report/protein_structure_pLDDT_mean_locally_modelated_prot.tsv'
+  input: 'report/ortholog_groups_x_sequence_clustering_x_UNIPROT_locally_modelated_prot.tsv' #'report/ortholog_groups_x_sequence_clustering_x_UNIPROT_locally_modelated_prot.tsv'
 
 
+#############################################################################################
+# CALCULATION OF pLDDT MEAN to use as filter to select representitative structure in cluster
+#############################################################################################
 
 rule LMP_pLDDT_mean_calculation:
-  input: 'tmp/download_finished.out'
-  output: 'report/protein_structure_pLDDT_mean_locally_modelated_prot.tsv'
-  threads: config['pLDDT_mean_calculation']['threads']
-  conda: '../envs/pLDDT_mean_calc.yaml'
-  shell: 'python3 scripts/3_pLDDT_mean_calculation-multiprocess-LMP.py --path_to_input_pdb_files genome_data_sets/query_proteomes/pdb_files/locally_modelated_proteins --output {output} --threads {threads}'
+  input: 
+    'tmp/download_finished.out'
+  output: 
+    'report/protein_structure_pLDDT_mean_locally_modelated_prot.tsv'
+  threads: 
+    config['pLDDT_mean_calculation']['threads']
+  conda: 
+    '../envs/pLDDT_mean_calc.yaml'
+  params:
+    path = 'genome_data_sets/query_proteomes/pdb_files/locally_modelated_proteins'
+  script: 
+    '../scripts/rules_scripts/2_pLDDT_mean_calculation-multiprocess-LMP.py'
 
 
 
+#############################
+# CREATING REPORTS pLDDT DATA
+#############################
 
-
-
-
-
-
-
-
-
-
+#add info, stats?
+rule LMP_ortho_MCL_modelated_report:
+  input: 
+    file1 = 'report/protein_structure_pLDDT_mean_locally_modelated_prot.tsv',
+    file2 = config['input_files']['ortholog_group_to_geneID']
+  output: 
+    'report/ortholog_groups_x_sequence_clustering_x_UNIPROT_locally_modelated_prot.tsv'
+  conda:
+    '../envs/pLDDT_mean_calc.yaml'
+  script:
+    '../scripts/rules_scripts/3_LMS_assigning_structure_to_OrthoGroup.py'
 
 
 

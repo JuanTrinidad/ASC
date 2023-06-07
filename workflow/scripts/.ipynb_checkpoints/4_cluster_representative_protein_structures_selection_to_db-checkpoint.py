@@ -6,59 +6,15 @@
 
 import pandas as pd
 import os
-import argparse
-
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-parser = argparse.ArgumentParser()
-
-parser.add_argument('--file1', type=argparse.FileType('r'), help='Path to first input file')
-parser.add_argument('--threads', type=int, help='Number of threads INT')
-
-args = parser.parse_args()
-
-
-
-file1 = args.file1.name
-threads = args.threads
-
-
-# file1 = '../report_files/ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv'
-# threads = 30
-
-# In[ ]:
-
-
-
 
 
 # In[13]:
 
 
-df = pd.read_csv(file1, sep='\t')
+df = pd.read_csv(snakemake.input[0], sep='\t')
 df = df.dropna()
 
-
-# In[ ]:
-
-
-
-
-
-# In[ ]:
-
-
-
-
-
+threads = snakemake.threads
 # In[11]:
 
 

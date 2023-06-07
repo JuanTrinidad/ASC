@@ -1,56 +1,45 @@
 #!/usr/bin/env python
 # coding: utf-8
 
-# In[1]:
+# In[26]:
 
 
 import pandas as pd 
 from Bio.PDB import *
-import argparse
 import glob
 import multiprocessing
 
 
-# In[ ]:
+
+output = snakemake.output[0]
+num_threads = snakemake.threads
 
 
-parser = argparse.ArgumentParser()
+path = snakemake.params.path
+# output = '../report/probandopLDDT.tsv'
+# num_threads = 30
 
-parser.add_argument('--output', type=argparse.FileType('w'), help='Path to output file')
-parser.add_argument('--threads', type=int, help='Number of threads INT')
-
-args = parser.parse_args()
-
-output = args.output.name
-num_threads = args.threads
-
-
-# In[2]:
+# In[46]:
 
 
 print('Calculating pLDDT mean of protein structures')
 
 
-# In[ ]:
+# In[47]:
 
 
-df_UNIPROT = pd.read_csv('mandatory_files/fasta_header_to_uniprot.tsv', sep='\t', header=None, names=['GeneID', 'UNIPROT'])
 
-lista_archivos = [f'genome_data_sets/query_proteomes/pdb_files/prot_structure_download_from_AlphaFoldDB/AF-{UNIPROTaccession}-F1-model_v4.pdb' for UNIPROTaccession in df_UNIPROT.UNIPROT.unique()]
-
-
-#output = '../report_files/protein_structure_pLDDT_mean_multi_prueba.tsv'
-#num_threads = 20
+lista_archivos = glob.glob(f'{path}/*.pdb')
 
 
-# In[4]:
+# In[48]:
 
 
 def Average(lst):
     return round(sum(lst) / len(lst))
 
 
-# In[5]:
+# In[49]:
 
 
 
@@ -61,7 +50,9 @@ def extract_values_from_PDB_files(PDBfile):
     
     PDBparser = PDBParser(PERMISSIVE = True, QUIET = True)
     
-    uniprot = PDBfile.split('/')[-1].split('-')[1]
+    uniprot = PDBfile.split('/')[-1]
+    
+    uniprot = uniprot[:uniprot.find('_unrelaxed_rank_')]
     
     data = PDBparser.get_structure(uniprot, PDBfile)
     
@@ -74,7 +65,7 @@ def extract_values_from_PDB_files(PDBfile):
     return uniprot, Average(bfactor)
 
 
-# In[6]:
+# In[50]:
 
 
 def main(num_threads):
@@ -109,7 +100,7 @@ def main(num_threads):
 
 
 
-# In[ ]:
+# In[51]:
 
 
 if __name__ == "__main__":
