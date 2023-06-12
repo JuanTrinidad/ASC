@@ -14,6 +14,7 @@ import os
 df = pd.read_csv(snakemake.input[0], sep='\t')
 df = df.dropna()
 
+path = snakemake.params.path
 threads = snakemake.threads
 # In[11]:
 
@@ -26,7 +27,7 @@ import concurrent.futures
 files = [f'genome_data_sets/query_proteomes/pdb_files/prot_structure_download_from_AlphaFoldDB/AF-{UNIPROTaccession}-F1-model_v4.pdb' for UNIPROTaccession in df.uniprot.unique()]
 
 # Create the destination directory
-destination_dir = os.path.join(os.getcwd(), "genome_data_sets/query_proteomes/pdb_files/cluster_structure_representers")
+destination_dir = os.path.join(os.getcwd(), path)
 if not os.path.exists(destination_dir):
     os.mkdir(destination_dir)
 

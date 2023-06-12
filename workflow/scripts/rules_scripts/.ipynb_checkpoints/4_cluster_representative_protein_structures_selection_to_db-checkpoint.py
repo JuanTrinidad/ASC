@@ -11,7 +11,7 @@ import os
 # In[13]:
 
 
-df = pd.read_csv(snakemake.input[0], sep='\t')
+df = pd.read_csv(snakemake.input[0], sep='\t', names=['geneID', 'pLLDT_mean', 'file_name'])
 df = df.dropna()
 
 path = snakemake.params.path
@@ -24,7 +24,7 @@ import shutil
 import concurrent.futures
 
 # Get the list of files to copy
-files = [f'genome_data_sets/query_proteomes/pdb_files/prot_structure_download_from_AlphaFoldDB/AF-{UNIPROTaccession}-F1-model_v4.pdb' for UNIPROTaccession in df.uniprot.unique()]
+files = [f'genome_data_sets/query_proteomes/pdb_files/locally_modelated_proteins/{filename}' for filename in df.file_name.unique()]
 
 # Create the destination directory
 destination_dir = os.path.join(os.getcwd(), path)

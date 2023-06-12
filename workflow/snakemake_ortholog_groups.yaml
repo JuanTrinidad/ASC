@@ -33,6 +33,7 @@ model_organisms_files_final = [file.split('/')[-1] for file in model_organisms_f
 #individual org db files
 model_organisms_files_final_db = [file.split('/')[-1][:-4] for file in model_organisms_files]
 
+
 print('This are the model organisms files provided:')
 for file in model_organisms_files:
     print(file.split('/')[-1] )
@@ -59,9 +60,14 @@ pdb_files_full_path = expand('genome_data_sets/query_proteomes/pdb_files/prot_st
 #print('protein_sequences_from_cluster_wo_structure_in_AFDB.fasta' if config['fasta_file_of_non_modelated_clusters']['create_fasta_file'] else 'config/mandatory_files/fasta_header_to_uniprot.tsv')
 optional_file = 'protein_sequences_from_cluster_wo_structure_in_AFDB.fasta' if config['fasta_file_of_non_modelated_clusters']['create_fasta_file'] else '../config/mandatory_files/fasta_header_to_uniprot.tsv'
 
-rule all:
-  input: 'tmp/download_finished_some_modification.out'
-    #expand('../results/reciprocal_best_hit_TSV/cluster_representer_vs_{organisms}.tsv', organisms = [file[:-4] for file in model_organisms_files_final]), 
+
+rule all: 
+  input: expand('../results/reciprocal_best_hit_TSV/cluster_representer_vs_{organisms}.tsv', organisms = model_organisms_files_final_db),
+    '../results/foldseek_search_TSV/cluster_representer_vs_SwissProt.tsv' #
+    #'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer' #
+    #expand('../results/reciprocal_best_hit/cluster_representer_vs_{organisms}', organisms = model_organisms_files_final_db)
+    #expand( '../results/reciprocal_best_hit_TSV/cluster_representer_vs_{organisms}.tsv'  , organisms = model_organisms_files_final_db) #,
+    #'../results/foldseek_search_TSV/cluster_representer_vs_SwissProt.tsv'
     #expand('../results/reciprocal_best_hit/cluster_representer_vs_{organisms}', organisms = [file[:-4] for file in model_organisms_files_final]),
     #'../results/foldseek_search/cluster_representer_vs_SwissProt.index',
     #'../results/foldseek_search_TSV/cluster_representer_vs_SwissProt.tsv',
@@ -153,6 +159,8 @@ rule cluster_representer_protein_structures:
     touch('tmp/files_copied.done')
   conda:
     'envs/env_nameconverter_and_AFDBdownload.yaml'
+  params: 
+    path = 'genome_data_sets/query_proteomes/pdb_files/cluster_structure_representers'
   threads: workflow.cores
   script:
     'scripts/4_cluster_representative_protein_structures_selection_to_db.py'
@@ -197,11 +205,13 @@ rule create_separates_DB_for_model_organisms:
   input: 
     'genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/{organisms}.tar'
   output:
-    'genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}'
+    multiext('genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index')
   conda:
     'envs/env_foldseek.yaml'
+  threads: workflow.cores
   shell:
-    'foldseek createdb {input} {output}'
+    'foldseek createdb {input} {output[0]} --threads {threads}'
+
 
 ##############
 # CREATING FOLDSEEK DB FOR ALL MODEL ORGANISMS
@@ -211,27 +221,31 @@ rule create_single_DB_for_model_organisms:
   input: 
     model_organisms_files
   output:
-    'genome_data_sets/subject_proteomes/foldseek_data_base/all_org_DB/all_model_organisms_DB'
+    multiext('genome_data_sets/subject_proteomes/foldseek_data_base/all_org_DB/all_model_organisms_DB', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index')
   conda:
     'envs/env_foldseek.yaml'
-  shell:
-    'foldseek createdb genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/ {output}'
+  params: path =  lambda wildcards, input: '/'.join(input[0].split('/')[:-1])
+  threads: workflow.cores
+  shell: 
+    'foldseek createdb {params.path} {output[0]} --threads {threads}'
 
 
-##############
+####################################################################################
 # CREATING FOLDSEEK DB FROM DOWNLOADED PROTEIN STRUCTURES - CLUSTER REPRESENTERS
-##############
+####################################################################################
 
 
 rule foldseek_db_query_proteins:
   input: 
     'tmp/files_copied.done' #protein_files
   output:
-    'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer'
+    multiext('genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index')
   conda:
     'envs/env_foldseek.yaml'
+  params: path =  'genome_data_sets/query_proteomes/pdb_files/cluster_structure_representers/'
+  threads: workflow.cores
   shell:
-    'foldseek createdb genome_data_sets/query_proteomes/pdb_files/cluster_structure_representers/ {output}'
+    'foldseek createdb {params.path} {output[0]} --threads {threads}'
 
 
 ##############################
@@ -241,19 +255,21 @@ rule foldseek_db_query_proteins:
 
 rule foldseek_reciprocal_best_hit:
   input: 
-    query = 'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', 
-    subject = 'genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}.source'
-  output:
-    '../results/reciprocal_best_hit/cluster_representer_vs_{organisms}'  
+    query = multiext('genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index'), 
+    subject = multiext('genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index')
+  output: 
+    #'../results/reciprocal_best_hit/cluster_representer_vs_{organisms}'
+    multiext('../results/reciprocal_best_hit/cluster_representer_vs_{organisms}','','.dbtype','.index')
   conda:
     'envs/env_foldseek.yaml'
-  threads: 40
+  threads: workflow.cores
   params:
     sensitivity = config['reciprocal_best_hit_parameters']['sensitivity'],
     cov_mode = config['reciprocal_best_hit_parameters']['cov_mode'],
     coverage = config['reciprocal_best_hit_parameters']['coverage']
   shell:
-    'foldseek rbh {input.query} genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{wildcards.organisms} {output} ./tmp --threads {threads} -s {params.sensitivity} -c {params.coverage} -a'
+    'foldseek rbh {input.query[0]} {input.subject[0]} {output[0]} ./tmp --threads {threads} -s {params.sensitivity} -c {params.coverage} -a'
+    #'foldseek rbh {input.query[0]} {input.subject[0]} {output[0]} ./tmp --threads {threads} -s {params.sensitivity} -c {params.coverage} -a'
 
 
 # --format-output query,target,fident,alnlen,mismatch,gapopen,qstart,qend,tstart,tend,evalue,bits,prob
@@ -282,18 +298,16 @@ rule foldseek_reciprocal_best_hit:
 
 rule foldseek_reciprocal_best_hit_extract_result_tsv:
   input: 
-    query = 'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', 
-    #subject = 'genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}.source',
-    table = expand('../results/reciprocal_best_hit/cluster_representer_vs_{organisms}', organisms = [file[:-4] for file in model_organisms_files_final])
+    query = multiext('genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index'),
+    subject = multiext('genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index'),
+    table = multiext('../results/reciprocal_best_hit/cluster_representer_vs_{organisms}', '', '.dbtype','.index')
   output:
     '../results/reciprocal_best_hit_TSV/cluster_representer_vs_{organisms}.tsv'  
   conda:
     'envs/env_foldseek.yaml'
-  threads: 40
+  threads: workflow.cores
   shell:
-    'foldseek createtsv {input.query} genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{wildcards.organisms} ../results/reciprocal_best_hit/cluster_representer_vs_{wildcards.organisms} {output}'
-
-
+    'foldseek createtsv {input.query[0]} {input.subject[0]} {input.table[0]} {output} --threads {threads}'
 
     
 
@@ -304,29 +318,22 @@ rule foldseek_reciprocal_best_hit_extract_result_tsv:
 
 rule foldseek_search_ SwissProt:
   input: 
-    query = 'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', 
-    subject = 'protein_data_bases/Swiss-Prot'
+    query = multiext('genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index'),
+    subject = multiext('protein_data_bases/Swiss-Prot', '' ,'.dbtype','.index','.lookup','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index') #_mapping, _taxonomy, not mandatory
   output:
-    '../results/foldseek_search/cluster_representer_vs_SwissProt.index'  
+    multiext('../results/foldseek_search/cluster_representer_vs_SwissProt', '.index', '.dbtype') 
   conda:
     'envs/env_foldseek.yaml'
-  threads: 40
+  threads: workflow.cores
   params:
     sensitivity = config['foldseek_search_against_SwissProt_parameters']['sensitivity'],
     cov_mode = config['foldseek_search_against_SwissProt_parameters']['cov_mode'],
     coverage = config['foldseek_search_against_SwissProt_parameters']['coverage'],
-    evalue = config['foldseek_search_against_SwissProt_parameters']['evalue']
+    evalue = config['foldseek_search_against_SwissProt_parameters']['evalue'],
+    path =  lambda wildcards, output: output[0][:-6] 
+    
   shell:
-    'foldseek search \
-    {input.query} \
-    {input.subject} \
-    ../results/foldseek_search/cluster_representer_vs_SwissProt \
-    ./tmp \
-    --threads {threads} \
-    -s {params.sensitivity} \
-    -c {params.coverage} \
-    -a \
-    -e {params.evalue}'
+    'foldseek search {input.query[0]} {input.subject[0]} {params.path} ./tmp --threads {threads} -s {params.sensitivity} -c {params.coverage} -a -e {params.evalue}'
     
     
 ##############################
@@ -336,16 +343,17 @@ rule foldseek_search_ SwissProt:
 
 rule foldseek_search_ SwissProt_extract_result_tsv:
   input: 
-    query = 'genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', 
-    subject = 'protein_data_bases/Swiss-Prot',
-    table = '../results/foldseek_search/cluster_representer_vs_SwissProt.index'
+    query = multiext('genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index'),
+    subject = multiext('protein_data_bases/Swiss-Prot', '' ,'.dbtype','.index','.lookup', '_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index'), #_mapping, _taxonomy, not mandatory
+    table =  multiext('../results/foldseek_search/cluster_representer_vs_SwissProt','.index', '.dbtype')
   output:
      '../results/foldseek_search_TSV/cluster_representer_vs_SwissProt.tsv'
   conda:
     'envs/env_foldseek.yaml'
-  threads: 40
+  threads: workflow.cores
+  params: path =  lambda wildcards, input: input.table[0][:-6] 
   shell:
-    'foldseek createtsv {input.query} {input.subject} ../results/foldseek_search/cluster_representer_vs_SwissProt {output} ./tmp'
+    'foldseek createtsv {input.query[0]} {input.subject[0]} {params.path} {output} --threads {threads}'
 
 
 ################################
@@ -381,3 +389,70 @@ rule download_SwissProt_annotation_info:
 
 
 
+
+
+
+
+###########################################
+#
+#
+#  TESTING
+#
+#
+###########################################
+
+
+rule cheking:
+  input: table = 'tmp/download_finished.out'
+  output: 'tmp/amista.txt'
+  params: lambda wildcards, input: input[0][:-4] #: os.path.splitext(output[0])[1]
+  shell:
+    '''
+    echo {params}
+    echo {input.table}
+    '''
+    
+    
+    
+    
+    
+rule TESTING_foldseek_reciprocal_best_hit:
+  input: 
+    query = multiext('genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index'), 
+    subject = multiext('genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index')
+  output: 
+    #'../results/reciprocal_best_hit/cluster_representer_vs_{organisms}'
+    touch('tmp/amista_{organisms}.txt')
+  conda:
+    'envs/env_foldseek.yaml'
+  threads: workflow.cores
+  params:
+    sensitivity = config['reciprocal_best_hit_parameters']['sensitivity'],
+    cov_mode = config['reciprocal_best_hit_parameters']['cov_mode'],
+    coverage = config['reciprocal_best_hit_parameters']['coverage']
+  shell:
+    '''
+     echo {input.subject}
+     echo {wildcards.organisms}
+     '''
+     
+     
+     
+     
+rule TESTING_foldseek_reciprocal_best_hit_extract_result_tsv:
+  input: 
+    query = multiext('genome_data_sets/query_proteomes/foldseek_data_base/DB_cluster_representer', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index'),
+    subject = multiext('genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index'),
+    table = multiext('../results/reciprocal_best_hit/cluster_representer_vs_{organisms}', '', '.dbtype','.index')
+  output:
+    touch('tmp/amistad_{organisms}.tsv')
+  conda:
+    'envs/env_foldseek.yaml'
+  threads: workflow.cores
+  shell:
+    '''
+     echo {input.subject[0]}
+     echo {input.table[0]}
+     echo {wildcards.organisms}
+     '''   
+    #'foldseek createtsv {input.query[0]} {input.subject[0]} {input.table[0]} {output} --threads {threads}'

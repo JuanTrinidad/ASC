@@ -62,7 +62,7 @@ def extract_values_from_PDB_files(PDBfile):
     
         bfactor.append(atom.get_bfactor())
     
-    return uniprot, Average(bfactor)
+    return uniprot, [Average(bfactor), PDBfile.split('/')[-1]]
 
 
 # In[50]:
