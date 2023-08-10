@@ -26,9 +26,15 @@ input_files:
 mmseq2_query_sequences_clustering:
   mmseqs2_cluster_module: 'cluster' #cluster, linclust, easy-linclust
   cluster_mode: 0
-  minimum_sequence_identity: 0.9
-  minimum_coverage: 0.7
+  minimum_sequence_identity: 0
+  minimum_coverage: 0.8
   coverage_mode: 0
+  evalue: !!float 1e-3
+  similarity_type: 2
+  
+cluster_filtering:
+  cluster_size: 10
+  
   
 downloading_from_AFDB:
   threads: 40
@@ -37,16 +43,31 @@ downloading_from_AFDB:
 pLDDT_mean_calculation:
   threads: 40
   
-  
+#clustering_foldseek_db_query_proteins:
+#  sensitivity: 9.5
+#  cov_mode: 0
+#  coverage: 0.8
+#  evalue: !!float 1e-5
+#  minseqid: 0.5
   
 reciprocal_best_hit_parameters:
   sensitivity: 9.5
   cov_mode: 0
   coverage: 0
   
+
   
-foldseek_search_against_SwissProt_parameters:
-  sensitivity: 9.5
+foldseek_search_against_Uniprot50_parameters:
+  sensitivity: 7.5
   cov_mode: 0
   coverage: 0
+  evalue: !!float 1e-5
+  
+  
+  
+foldseek_clustering_model_org_DB_parameters:
+  sensitivity: 4
+  cov_mode: 0
+  coverage: 0.8
   evalue: !!float 1e-3
+  fident: 0.3

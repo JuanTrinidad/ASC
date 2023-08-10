@@ -1,0 +1,9 @@
+channels:
+  - defaults
+  - conda-forge
+  - bioconda
+  
+dependencies:
+  - nbconvert=6.5.4
+  - pandas=1.5.3
+  - python=3.11.3

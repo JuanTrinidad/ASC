@@ -30,7 +30,10 @@ files = [f'genome_data_sets/query_proteomes/pdb_files/prot_structure_download_fr
 destination_dir = os.path.join(os.getcwd(), path)
 if not os.path.exists(destination_dir):
     os.mkdir(destination_dir)
-
+else:
+    shutil.rmtree(destination_dir)
+    os.mkdir(destination_dir)
+    
 # Copy the files in parallel
 with concurrent.futures.ThreadPoolExecutor(max_workers=threads) as executor:
     future_to_file = {executor.submit(shutil.copy, file, destination_dir): file for file in files}

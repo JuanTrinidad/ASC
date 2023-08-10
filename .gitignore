@@ -6,3 +6,4 @@ workflow/report_files/
 workflow/nohup*
 results/
 workflow/protein_data_bases/
+config/mandatory_files/
