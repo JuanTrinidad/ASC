@@ -3,4 +3,4 @@ channels:
   - bioconda
 
 dependencies:
-  - foldseek=6.29e2557
+  - foldseek=8.ef4e960

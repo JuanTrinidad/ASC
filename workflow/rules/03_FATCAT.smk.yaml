@@ -1,0 +1,40 @@
+print(workflow.basedir)
+
+
+
+################
+# CLONING GITHUB
+################
+
+
+rule clone_FATCAT_repository:
+    output: 'git_repo_cloned/FATCAT/Install'
+    shell: 'git clone https://github.com/GodzikLab/FATCAT-dist.git git_repo_cloned/FATCAT'
+    
+    
+###################
+# INSTALLING FATCAT
+###################
+
+rule installing_FATCAT_repository:
+    input: 'git_repo_cloned/FATCAT/Install'
+    output: touch('tmp/FATCAT_installed_sucesfully.out')
+    shell: '''
+    cd git_repo_cloned/FATCAT/
+    ./Install
+    
+    '''
+    
+    
+rule run_FATCAT:
+    input: 'tmp/FATCAT_installed_sucesfully.out'
+    output: '/tmp/probando.out'
+    params: workflow.basedir
+    shell: 'echo {params}'
+  
+    
+    
+    
+    
+    
+    
