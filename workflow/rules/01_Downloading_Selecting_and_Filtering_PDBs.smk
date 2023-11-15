@@ -93,7 +93,7 @@ rule cluster_representer_protein_structures:
   input: 
     'report/{all_sequence_fasta}_ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv'
   output: 
-    touch('tmp/{all_sequence_fasta}_files_copied.done')
+    temp(touch('tmp/{all_sequence_fasta}_files_copied.done'))
   conda:
     '../envs/env_nameconverter_and_AFDBdownload.yaml'
   params: 

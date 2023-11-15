@@ -72,12 +72,12 @@ for file in model_organisms_files:
 
 
 
-include:'rules/testing.smk.yaml'
-include:'rules/00_MMseq2_sequence_clustering.smk.yaml'
-include:'rules/01_Downloading_Selecting_and_Filtering_PDBs.smk.yaml'
-include:'rules/02_Foldseek_rules-SingleOrgApproach.smk.yaml'
-include:'rules/04_Downloading_annotation_from_uniprot.smk.yaml'
-include:'rules/03_FATCAT.smk.yaml'
+include:'rules/testing.smk'
+include:'rules/00_MMseq2_sequence_clustering.smk'
+include:'rules/01_Downloading_Selecting_and_Filtering_PDBs.smk'
+include:'rules/02_Foldseek_rules-SingleOrgApproach.smk'
+include:'rules/04_Downloading_annotation_from_uniprot.smk'
+include:'rules/03_FATCAT.smk'
     
 rule all: 
   input:  '../results/reciprocal_best_hit_SingleOrgApproach_TSV/rbh_all_in_one_file.tsv'

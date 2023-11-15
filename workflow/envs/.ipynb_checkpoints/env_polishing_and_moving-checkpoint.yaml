@@ -1,0 +1,11 @@
+channels:
+  - defaults
+  - conda-forge
+  - bioconda
+  
+dependencies:
+  - pandas=1.5.3
+  - python=3.11.3
+  - os
+  - shutils
+  - multiprocessing

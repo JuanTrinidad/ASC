@@ -17,9 +17,10 @@
 
 rule foldseek_db_query_proteins:
   input: 
-    'tmp/{all_sequence_fasta}_files_copied.done' #protein_files
+    'report/{all_sequence_fasta}_ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv',
+    'tmp/{all_sequence_fasta}_files_copied.done' 
   output:
-    multiext('genome_data_sets/query_proteomes/foldseek_data_base/{all_sequence_fasta}_DB_cluster_representer', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index')
+    temp(multiext('genome_data_sets/query_proteomes/foldseek_data_base/{all_sequence_fasta}_DB_cluster_representer', '', '.dbtype','.index','.lookup','.source','_ca', '_ca.dbtype', '_ca.index','_h','_h.dbtype','_h.index', '_ss', '_ss.dbtype','_ss.index'))
   conda:
     '../envs/env_foldseek.yaml'
   params: path =  'genome_data_sets/query_proteomes/pdb_files/cluster_structure_representers/'
