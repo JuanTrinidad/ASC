@@ -1,25 +1,23 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[49]:
-print('Preparing pdb files for FATCAT')
-
+# %%
 import pandas as pd
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 #pd.set_option('display.max_columns', 500)
 
-
-# In[ ]:
-
-
+# %%
 file1 = snakemake.input.file1 #'../report/TriTrypDB-65_All_species_clean_Ortholog_Group_Full_of_hypotetical_boolean.tsv'
 file2 = snakemake.input.file2 #'../../results/reciprocal_best_hit_SingleOrgApproach_TSV/rbh_all_in_one_file.tsv'
 file3 = snakemake.input.file3 #'../../results/Gene_annotation_info_from_uniprot_model_spp.tsv'
 file4 = snakemake.input.file4 #'../report/TriTrypDB-65_All_species_clean_ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv'
+outputfilepath = snakemake.output.list_file_to_fatcat
+outputfilepath2 = snakemake.output.tsv_to_match_pdbs_names
 
 # destination directory
 destination_dir = snakemake.params.destination_dir
+# cluster_structure_representers path
+cluster_str_rep_path = 'genome_data_sets/query_proteomes/pdb_files/cluster_structure_representers/'
+#path to model unziped
+path_to_model_unzip = 'genome_data_sets/subject_proteomes/pdb_files/model_organisms_files_unzip/'
 #cores
 num_cores = snakemake.threads
 #top hits
@@ -27,10 +25,29 @@ top_hits = snakemake.params.top_hits
 #prefix added pdbs
 prefix = snakemake.params.prefix_of_added_pdbs
 
+# %% [markdown]
+# file1 = '../report/TriTrypDB-65_All_species_clean_Ortholog_Group_Full_of_hypotetical_boolean.tsv'
+# file2 = '../../results/reciprocal_best_hit_SingleOrgApproach_TSV/rbh_all_in_one_file.tsv'
+# file3 = '../../results/Gene_annotation_info_from_uniprot_model_spp.tsv'
+# file4 = '../report/TriTrypDB-65_All_species_clean_ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv'
+# 
+# outputfilepath = '../tmp/to_compare.list'
+# outputfilepath2 = '../tmp/quert_taget_accesion_to_fatcat_list.tsv'
+# 
+# # destination directory
+# destination_dir = '../tmp/FATCAT_pdb_files/'
+# # cluster_structure_representers path
+# cluster_str_rep_path = '../genome_data_sets/query_proteomes/pdb_files/cluster_structure_representers/'
+# #path to model unziped
+# path_to_model_unzip = '../genome_data_sets/subject_proteomes/pdb_files/model_organisms_files_unzip/'
+# #cores
+# num_cores = 40
+# #top hits
+# top_hits = 5
+# #prefix added pdbs
+# prefix = 'wheelerlab_'
 
-# In[50]:
-
-
+# %%
 #hypothetical OG data
 df_hypothetical_OG = pd.read_csv(file1, sep='\t')
 
@@ -58,10 +75,7 @@ df_MO_annotation = df_MO_annotation[columns_for_df].dropna(thresh=10)
 #keeping only relevant columns
 #df_kineto_annotation = df_kineto_annotation[columns_for_df]
 
-
-# In[51]:
-
-
+# %%
 
 #aca uso inner porque quiero evitar las proteinas sin buena anotacion en el resultado
 df_rbh_km = df_rbh.merge(df_MO_annotation, left_on='target_uniprot_accession', right_on='Entry', how='left', suffixes=['_kineto', '_model'])
@@ -76,21 +90,13 @@ df_rbh_km = df_rbh_km.merge(df_hypothetical_OG, left_on='Ortholog_Group', right_
 #print(df_rbh_km.shape)
 
 
-# In[ ]:
+# %%
 
 
+# %%
 
 
-
-# In[ ]:
-
-
-
-
-
-# In[52]:
-
-
+# %%
 df_rbh_km = (
     df_rbh_km
     .sort_values('target', ascending=False)
@@ -98,16 +104,10 @@ df_rbh_km = (
                     )
 )
 
-
-# In[ ]:
-
+# %%
 
 
-
-
-# In[53]:
-
-
+# %%
 df_rbh_km_tophits =(
     df_rbh_km
     .sort_values(['evalue'])
@@ -115,44 +115,36 @@ df_rbh_km_tophits =(
     .head(top_hits)
 )
 
-
-# In[ ]:
-
+# %%
 
 
+# %%
 
 
-# In[ ]:
+# %%
+#simplifiying names of pdb files
+df_rbh_km_tophits['new_simple_name'] =  (
+
+    df_rbh_km_tophits['query_uniprot_accession']
+    .str.replace(prefix,'')
+    .str.split('_', expand=True)[0]
+    .str.replace('.','')
+    + '.pdb'
+)
 
 
 
-
-
-# In[54]:
-
-
-df_rbh_km_tophits_to_move_files = df_rbh_km_tophits[['query', 'query_uniprot_accession']].drop_duplicates()
-
-
-# In[55]:
-
-
-df_rbh_km_tophits_to_move_files['new_simple_name'] = df_rbh_km_tophits_to_move_files.query_uniprot_accession.str.replace(prefix,'').str.split('_', expand=True)[0].str.replace('.','')
-df_rbh_km_tophits_to_move_files['new_simple_name'] = df_rbh_km_tophits_to_move_files['new_simple_name'] + '.pdb'
-df_rbh_km_tophits_to_move_files['path_to_file'] = 'genome_data_sets/query_proteomes/pdb_files/cluster_structure_representers/' + df_rbh_km_tophits_to_move_files['query']
-
-
-# In[56]:
-
-
+#dropping duplicates
+df_rbh_km_tophits_to_move_files = df_rbh_km_tophits[['query', 'query_uniprot_accession', 'new_simple_name']].drop_duplicates()
+#adding path to file
+df_rbh_km_tophits_to_move_files['path_to_file'] = cluster_str_rep_path + df_rbh_km_tophits_to_move_files['query']
+#creating the list of tuples
 files_list = list(zip(df_rbh_km_tophits_to_move_files.path_to_file, df_rbh_km_tophits_to_move_files.new_simple_name))
 
-
+# %% [markdown]
 # #### Funtion to copie pdb files from cluster structure representer to use FATCAT. Also name simplified.
 
-# In[57]:
-
-
+# %%
 import os
 import shutil
 import multiprocessing
@@ -171,14 +163,62 @@ def copy_files(files, destination_dir, num_cores=4):
     with multiprocessing.Pool(num_cores) as pool:
         pool.starmap(copy_file, [(file, destination_dir) for file in files])
 
+def copy_files_wo_rm(files, destination_dir, num_cores=4):
+    """Copy a list of files to a destination directory in parallel."""
+    with multiprocessing.Pool(num_cores) as pool:
+        pool.starmap(copy_file, [(file, destination_dir) for file in files])
+
 
 
 # copy the files to the destination directory in parallel
 copy_files(files_list, destination_dir, num_cores= num_cores)
 
 
-# In[ ]:
+# %% [markdown]
+# #### same approach to model org files
+
+# %%
+def filter_df(df, proteome, path):
+    df = df[df.proteome == proteome]
+    df = df.drop_duplicates(subset=['target'])
+    df['path_to_file'] = path + df['target'] 
+    df['new_simple_name'] = df.target.str.split('-',expand=True)[1]  +  df.target.str[-8:]
 
 
+    return list(zip(df.path_to_file, df.new_simple_name))
+
+# %%
+for proteome in os.listdir(path_to_model_unzip):
+    UPproteome = proteome.split('_')[0]
+    
+    if UPproteome in df_rbh_km_tophits['proteome'].unique():
+        print(f'Coping files from {proteome} to FACTCAT_folder')
+
+        path = path_to_model_unzip + proteome + '/'
+        
+        files_list = filter_df(df_rbh_km_tophits, UPproteome, path)
+        
+        copy_files_wo_rm(files_list, destination_dir, num_cores= num_cores)
+
+            
+
+
+
+# %% [markdown]
+# #### Final output list of files to compare with FATCAT
+
+# %%
+def creating_file_for_FATCATQue(df, outputfilepath, outputfilepath2):
+    df['new_simple_name'] = df['new_simple_name'].str.split('.', expand=True)[0]
+    df.sort_values('new_simple_name', inplace=True)
+
+    df[['new_simple_name', 'target_uniprot_accession']].to_csv(outputfilepath, sep=' ', header=False, index=False) 
+    df[['query','target', 'new_simple_name', 'target_uniprot_accession']].to_csv(outputfilepath2, sep='\t', index=False)
+
+
+creating_file_for_FATCATQue(df_rbh_km_tophits, outputfilepath, outputfilepath2)
+
+# %% [markdown]
+# 
 
 

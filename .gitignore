@@ -1,11 +1,12 @@
 #ignore data
+results/
+config/mandatory_files/
+
 workflow/genome_data_sets/
 workflow/tmp/
 workflow/.*
 workflow/nohup*
-results/
 workflow/protein_data_bases/
-config/mandatory_files/
 workflow/notebooks/Data_inspection/
 workflow/notebooks/rules_notebooks/
 workflow/Tb_part*
