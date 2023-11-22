@@ -4,8 +4,6 @@ channels:
   - bioconda
   
 dependencies:
+  - gemmi
   - pandas=1.5.3
-  - python=3.11.3
-  - os
-  - shutils
-  - multiprocessing
+  

@@ -21,15 +21,15 @@ rule unzip_uniprot_proteomes:
 
 rule moving_files_from_clusters_to_FACTCATfolder:
     input: 
-        file1 = 'report/TriTrypDB-65_All_species_clean_Ortholog_Group_Full_of_hypotetical_boolean.tsv',
+        file1 = 'report/{all_sequence_fasta}_Ortholog_Group_Full_of_hypotetical_boolean.tsv',
         file2 = '../results/reciprocal_best_hit_SingleOrgApproach_TSV/rbh_all_in_one_file.tsv',
         file3 = '../results/Gene_annotation_info_from_uniprot_model_spp.tsv',
-        file4 = 'report/TriTrypDB-65_All_species_clean_ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv',
+        file4 = 'report/{all_sequence_fasta}_ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv',
         dirs = expand('genome_data_sets/subject_proteomes/pdb_files/model_organisms_files_unzip/{proteome}/', proteome = model_organisms_files_final_db),
         files_directories = expand('genome_data_sets/subject_proteomes/pdb_files/model_organisms_files_unzip/{proteome}/', proteome= model_organisms_files_final_db)
     output: 
-        list_file_to_fatcat = 'tmp/to_compare.list',
-        tsv_to_match_pdbs_names = 'tmp/query_taget_accesion_to_fatcat_list.tsv'
+        list_file_to_fatcat = 'tmp/{all_sequence_fasta}_to_compare.list',
+        tsv_to_match_pdbs_names = 'tmp/{all_sequence_fasta}_query_taget_accesion_to_fatcat_list.tsv'
     conda: 
         '../envs/env_pLDDT_mean_calc.yaml'
     params: 
@@ -40,20 +40,37 @@ rule moving_files_from_clusters_to_FACTCATfolder:
     script: '../scripts/007_polishing_pdbfiles_to_use_in_FATCAT.py'
         
 
+
+
+
+
+@
 rule unzip_pdb_files:
     input:
-        'tmp/query_taget_accesion_to_fatcat_list.tsv',
-        'tmp/FATCAT_pdb_files/{file}.gz'
+        list_file_to_fatcat = 'tmp/{all_sequence_fasta}_to_compare.list',
+        tsv_to_match_pdbs_names = 'tmp/{all_sequence_fasta}_query_taget_accesion_to_fatcat_list.tsv'
+
     output:
-        'tmp/FATCAT_pdb_files/{file}'
+        touch('tmp/{all_sequence_fasta}_unziped_pdbcif_files.out')
+    params: files = [file for file in glob.glob('tmp/FATCAT_pdb_files/*.gz')]
     shell:
-        'gunzip {input[1]}'
+        'gunzip -d {params.files}'
 
 
 
-#primero correr el script 007
-#rule unzip_pdb_files:
-#despues convertir cif a pdb
+
+rule cif_to_pdb:
+    input:
+        'tmp/{all_sequence_fasta}_unziped_pdbcif_files.out'
+    output:
+        touch('tmp/{all_sequence_fasta}_cif_to_pdb.out')
+    conda:
+        '../envs/env_cif2pdb.yaml'
+    threads: workflow.cores
+    script:
+        '../scripts/008_cif2pdb.py'
+
+
 
 
 

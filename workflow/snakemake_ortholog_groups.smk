@@ -50,7 +50,8 @@ for file in model_organisms_files_final:
 
 #-------------------------------------------------------
     
-    
+#### CIF ###
+#cif_files = [cif for cif in glob.glob('tmp/FATCAT_pdb_files/*.cif')]
   
 
 #-------------------------------------------------------
@@ -80,7 +81,11 @@ include:'rules/03_FATCAT.smk'
 include:'rules/04_Downloading_annotation_from_uniprot.smk'
 
 rule all: 
-  input: expand('genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}', organisms = model_organisms_files_final_db)
+  input: 'tmp/TriTrypDB-65_All_species_clean_to_compare.list'
+  
+  #expand('genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}', organisms = model_organisms_files_final_db)
+  #expand('tmp/FATCAT_pdb_files/{file}.cif', file = cif_files)
+  #expand('genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}', organisms = model_organisms_files_final_db)
   #'tmp/to_compare.list' #'../results/reciprocal_best_hit_SingleOrgApproach_TSV/rbh_all_in_one_file.tsv'
   #'genome_data_sets/subject_proteomes/foldseek_data_base/all_org_DB/all_model_organisms_DB'
   #'../results/foldseek_search_TSV/cluster_representer_vs_Uniprot50.tsv', '../results/reciprocal_best_hit_TSV/rbh_all_in_one_file.tsv' #, '../results/Gene_annotation_info_from_uniprot_model_spp.tsv'        
