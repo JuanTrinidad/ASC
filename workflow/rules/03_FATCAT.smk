@@ -1,9 +1,6 @@
 
 
 
-
-
-
 rule unzip_uniprot_proteomes:
     input: 
         'genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/{proteome}.tar'
@@ -26,10 +23,9 @@ rule moving_files_from_clusters_to_FACTCATfolder:
         file3 = '../results/Gene_annotation_info_from_uniprot_model_spp.tsv',
         file4 = 'report/{all_sequence_fasta}_ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv',
         dirs = expand('genome_data_sets/subject_proteomes/pdb_files/model_organisms_files_unzip/{proteome}/', proteome = model_organisms_files_final_db),
-        files_directories = expand('genome_data_sets/subject_proteomes/pdb_files/model_organisms_files_unzip/{proteome}/', proteome= model_organisms_files_final_db)
+        files_directories = expand('genome_data_sets/subject_proteomes/pdb_files/model_organisms_files_unzip/{proteome}/', proteome= model_organisms_files_final_db)  
     output: 
-        list_file_to_fatcat = 'tmp/{all_sequence_fasta}_to_compare.list',
-        tsv_to_match_pdbs_names = 'tmp/{all_sequence_fasta}_query_taget_accesion_to_fatcat_list.tsv'
+        tsv_to_match_pdbs_names = 'tmp/{all_sequence_fasta}_query_taget_accesion_to_fatcat_list.tsv'#, directory('tmp/FATCAT_pdb_files/')
     conda: 
         '../envs/env_pLDDT_mean_calc.yaml'
     params: 
@@ -42,19 +38,21 @@ rule moving_files_from_clusters_to_FACTCATfolder:
 
 
 
+#ver de usar la funcion para levantar archivos y que esto sea mas rapdio
+def get_gz_files(wildcards):
+    return glob.glob("tmp/FATCAT_pdb_files/*.gz")
 
-
-@
+#da algunos problemas cuando se corre por segunda vez. Esto se debe a no usar correctamente snakemake. Despues solucionar, ej. usando temp en la regla anterior.
 rule unzip_pdb_files:
     input:
-        list_file_to_fatcat = 'tmp/{all_sequence_fasta}_to_compare.list',
+        pdb_gz = get_gz_files, 
         tsv_to_match_pdbs_names = 'tmp/{all_sequence_fasta}_query_taget_accesion_to_fatcat_list.tsv'
-
     output:
         touch('tmp/{all_sequence_fasta}_unziped_pdbcif_files.out')
-    params: files = [file for file in glob.glob('tmp/FATCAT_pdb_files/*.gz')]
-    shell:
-        'gunzip -d {params.files}'
+    #params: files = [file for file in glob.glob('tmp/FATCAT_pdb_files/*.gz')]
+    run:
+        for file in input.pdb_gz:
+            shell("gunzip {file}")
 
 
 
@@ -69,6 +67,23 @@ rule cif_to_pdb:
     threads: workflow.cores
     script:
         '../scripts/008_cif2pdb.py'
+
+
+
+#agregar el 009
+rule FATAT_aligment:
+    input:
+        'tmp/{all_sequence_fasta}_query_taget_accesion_to_fatcat_list.tsv'
+    output:
+        touch('tmp/{all_sequence_fasta}_FATCAT_aligment.out')
+    threads: workflow.cores
+    script:
+        '../scripts/009_FATCAT_aligment.py'
+
+
+
+
+
 
 
 
@@ -111,4 +126,17 @@ rule run_FATCAT:
     
     
     
-    
+### solucion a cuando hay que levantar archivos sin tenerlos facil prar imput
+
+def get_files(wildcards):
+    return glob.glob("tmp/FATCAT_pdb_files/*.pdb")
+
+
+rule use_files:
+    input:
+        get_files
+    output: touch('tmp/using_files.out')
+    shell:
+        """
+        echo {input}
+        """

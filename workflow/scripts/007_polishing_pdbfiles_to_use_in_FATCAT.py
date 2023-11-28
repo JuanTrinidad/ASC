@@ -9,7 +9,6 @@ file1 = snakemake.input.file1 #'../report/TriTrypDB-65_All_species_clean_Ortholo
 file2 = snakemake.input.file2 #'../../results/reciprocal_best_hit_SingleOrgApproach_TSV/rbh_all_in_one_file.tsv'
 file3 = snakemake.input.file3 #'../../results/Gene_annotation_info_from_uniprot_model_spp.tsv'
 file4 = snakemake.input.file4 #'../report/TriTrypDB-65_All_species_clean_ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv'
-outputfilepath = snakemake.output.list_file_to_fatcat
 outputfilepath2 = snakemake.output.tsv_to_match_pdbs_names
 
 # destination directory
@@ -31,7 +30,6 @@ prefix = snakemake.params.prefix_of_added_pdbs
 # file3 = '../../results/Gene_annotation_info_from_uniprot_model_spp.tsv'
 # file4 = '../report/TriTrypDB-65_All_species_clean_ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv'
 # 
-# outputfilepath = '../tmp/to_compare.list'
 # outputfilepath2 = '../tmp/quert_taget_accesion_to_fatcat_list.tsv'
 # 
 # # destination directory
@@ -179,11 +177,11 @@ copy_files(files_list, destination_dir, num_cores= num_cores)
 
 # %%
 def filter_df(df, proteome, path):
+    
     df = df[df.proteome == proteome]
     df = df.drop_duplicates(subset=['target'])
-    df['path_to_file'] = path + df['target'] 
-    df['new_simple_name'] = df.target.str.split('-',expand=True)[1]  +  df.target.str[-8:]
-
+    df['path_to_file'] = path + df['target']
+    df['new_simple_name'] = df.target.str.split('-',expand=True)[1]  + '.' +  df.target.str.split(".", 1, expand=True)[1]
 
     return list(zip(df.path_to_file, df.new_simple_name))
 
@@ -208,15 +206,15 @@ for proteome in os.listdir(path_to_model_unzip):
 # #### Final output list of files to compare with FATCAT
 
 # %%
-def creating_file_for_FATCATQue(df, outputfilepath, outputfilepath2):
+def creating_file_for_FATCATQue(df, outputfilepath2):
     df['new_simple_name'] = df['new_simple_name'].str.split('.', expand=True)[0]
     df.sort_values('new_simple_name', inplace=True)
 
-    df[['new_simple_name', 'target_uniprot_accession']].to_csv(outputfilepath, sep=' ', header=False, index=False) 
+    
     df[['query','target', 'new_simple_name', 'target_uniprot_accession']].to_csv(outputfilepath2, sep='\t', index=False)
 
 
-creating_file_for_FATCATQue(df_rbh_km_tophits, outputfilepath, outputfilepath2)
+creating_file_for_FATCATQue(df_rbh_km_tophits, outputfilepath2)
 
 # %% [markdown]
 # 
