@@ -81,7 +81,7 @@ include:'rules/03_FATCAT.smk'
 include:'rules/04_Downloading_annotation_from_uniprot.smk'
 
 rule all: 
-  input: 'tmp/TriTrypDB-65_All_species_clean_FATCAT_aligment.out'
+  input: 'tmp/TriTrypDB-65_All_species_clean_extract_twisted_structures.out'
   
   #expand('genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}', organisms = model_organisms_files_final_db)
   #expand('tmp/FATCAT_pdb_files/{file}.cif', file = cif_files)

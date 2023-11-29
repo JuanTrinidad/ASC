@@ -1,0 +1,27 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 30
+Rules claiming more threads will be scaled down.
+Job stats:
+job                           count    min threads    max threads
+--------------------------  -------  -------------  -------------
+FATAT_aligment                    1             30             30
+all                               1              1              1
+extract_twisted_structures        1              1              1
+total                             3              1             30
+
+Select jobs to execute...
+
+[Wed Nov 29 17:40:18 2023]
+rule FATAT_aligment:
+    input: tmp/TriTrypDB-65_All_species_clean_query_taget_accesion_to_fatcat_list.tsv
+    output: tmp/TriTrypDB-65_All_species_clean_FATCAT_aligment.out
+    jobid: 2
+    reason: Missing output files: tmp/TriTrypDB-65_All_species_clean_FATCAT_aligment.out
+    wildcards: all_sequence_fasta=TriTrypDB-65_All_species_clean
+    threads: 30
+    resources: tmpdir=/tmp
+
+Activating conda environment: .snakemake/conda/cd1c006332b4bd9425902c63d41d8b99_
+Activating conda environment: .snakemake/conda/cd1c006332b4bd9425902c63d41d8b99_
+All of the .pdb files are present in the FATCAT folder.

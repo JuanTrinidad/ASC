@@ -56,14 +56,14 @@ else:
 command_args = []
 
 for index, row in df.iterrows():
-    pdb1 = row['new_simple_name'] 
-    pdb2 = row['target_uniprot_accession']
+    pdb1 = row['target_uniprot_accession']
+    pdb2 = row['new_simple_name'] 
 
     command_args.append(["git_repo_cloned/FATCAT/FATCATMain/FATCAT", 
                          "-p1", f"tmp/FATCAT_pdb_files/{pdb1}.pdb",
                          "-p2", f"tmp/FATCAT_pdb_files/{pdb2}.pdb",
                          "-o", f"tmp/FATCAT_aligments/{pdb1}_{pdb2}", 
-                         "-m"])
+                         "-m", "-t"])
 
 
 # %%

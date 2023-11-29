@@ -70,21 +70,23 @@ rule cif_to_pdb:
 
 
 
-#agregar el 009
 rule FATAT_aligment:
     input:
         'tmp/{all_sequence_fasta}_query_taget_accesion_to_fatcat_list.tsv'
     output:
         touch('tmp/{all_sequence_fasta}_FATCAT_aligment.out')
+    conda: '../envs/env_pLDDT_mean_calc.yaml'
     threads: workflow.cores
     script:
         '../scripts/009_FATCAT_aligment.py'
 
 
 
-
-
-
+rule extract_twisted_structures:
+    input: 'tmp/{all_sequence_fasta}_FATCAT_aligment.out'
+    output: touch('tmp/{all_sequence_fasta}_extract_twisted_structures.out')
+    conda: '../envs/env_pLDDT_mean_calc.yaml'
+    script: '../scripts/011_prot_structure_sup_to_twisted2pdbs.py'
 
 
 
