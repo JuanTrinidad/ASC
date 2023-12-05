@@ -19,8 +19,8 @@ os.makedirs(folder_path)
 def process_file(file_path):
 
     output_name, output_name2  = file_path.split('/')[-1][:-14].split('_')
-    atom_a_file = 'tmp/FATCAT_aligments_twisted/' + output_name + "_twisted.pdb"
-    atom_b_file = 'tmp/FATCAT_aligments_twisted/' + output_name2 + "_twisted.pdb"
+    atom_a_file = 'tmp/FATCAT_aligments_twisted/' + output_name + '_' + output_name + '_' + output_name2 +"_twisted.pdb"
+    atom_b_file = 'tmp/FATCAT_aligments_twisted/' + output_name2 + '_' + output_name + '_' + output_name2 + "_twisted.pdb"
     
     with open(file_path, "r") as file:
         with open(atom_a_file, "w") as atom_a:
