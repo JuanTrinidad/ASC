@@ -5,60 +5,40 @@ Rules claiming more threads will be scaled down.
 Job stats:
 job                           count    min threads    max threads
 --------------------------  -------  -------------  -------------
-FATAT_aligment                    1             30             30
 all                               1              1              1
 extract_twisted_structures        1              1              1
-total                             3              1             30
+total                             2              1              1
 
 Select jobs to execute...
 
-[Wed Nov 29 17:40:18 2023]
-rule FATAT_aligment:
-    input: tmp/TriTrypDB-65_All_species_clean_query_taget_accesion_to_fatcat_list.tsv
-    output: tmp/TriTrypDB-65_All_species_clean_FATCAT_aligment.out
-    jobid: 2
-    reason: Missing output files: tmp/TriTrypDB-65_All_species_clean_FATCAT_aligment.out
-    wildcards: all_sequence_fasta=TriTrypDB-65_All_species_clean
-    threads: 30
-    resources: tmpdir=/tmp
-
-Activating conda environment: .snakemake/conda/cd1c006332b4bd9425902c63d41d8b99_
-Activating conda environment: .snakemake/conda/cd1c006332b4bd9425902c63d41d8b99_
-All of the .pdb files are present in the FATCAT folder.
-Touching output file tmp/TriTrypDB-65_All_species_clean_FATCAT_aligment.out.
-[Wed Nov 29 21:07:52 2023]
-Finished job 2.
-1 of 3 steps (33%) done
-Select jobs to execute...
-
-[Wed Nov 29 21:07:52 2023]
+[Tue Dec  5 15:51:19 2023]
 rule extract_twisted_structures:
     input: tmp/TriTrypDB-65_All_species_clean_FATCAT_aligment.out
     output: tmp/TriTrypDB-65_All_species_clean_extract_twisted_structures.out
     jobid: 1
-    reason: Missing output files: tmp/TriTrypDB-65_All_species_clean_extract_twisted_structures.out; Input files updated by another job: tmp/TriTrypDB-65_All_species_clean_FATCAT_aligment.out
+    reason: Missing output files: tmp/TriTrypDB-65_All_species_clean_extract_twisted_structures.out
     wildcards: all_sequence_fasta=TriTrypDB-65_All_species_clean
     resources: tmpdir=/tmp
 
 Activating conda environment: .snakemake/conda/cd1c006332b4bd9425902c63d41d8b99_
 Activating conda environment: .snakemake/conda/cd1c006332b4bd9425902c63d41d8b99_
 Touching output file tmp/TriTrypDB-65_All_species_clean_extract_twisted_structures.out.
-[Wed Nov 29 21:16:02 2023]
+[Tue Dec  5 16:03:15 2023]
 Finished job 1.
-2 of 3 steps (67%) done
+1 of 2 steps (50%) done
 Select jobs to execute...
 
-[Wed Nov 29 21:16:02 2023]
+[Tue Dec  5 16:03:15 2023]
 localrule all:
     input: tmp/TriTrypDB-65_All_species_clean_extract_twisted_structures.out
     jobid: 0
     reason: Input files updated by another job: tmp/TriTrypDB-65_All_species_clean_extract_twisted_structures.out
     resources: tmpdir=/tmp
 
-[Wed Nov 29 21:16:02 2023]
+[Tue Dec  5 16:03:15 2023]
 Finished job 0.
-3 of 3 steps (100%) done
-Complete log: .snakemake/log/2023-11-29T174013.740585.snakemake.log
+2 of 2 steps (100%) done
+Complete log: .snakemake/log/2023-12-05T155116.429246.snakemake.log
 Fasta file:
  TriTrypDB-65_All_species_clean.fa 
 
