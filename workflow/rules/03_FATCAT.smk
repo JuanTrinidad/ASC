@@ -90,6 +90,33 @@ rule extract_twisted_structures:
 
 
 
+rule TMalign_twisted_structures:
+    input: 'tmp/{all_sequence_fasta}_extract_twisted_structures.out'
+    output: touch('tmp/{all_sequence_fasta}_TMalign_twisted_structures.out')
+    conda: '../envs/env_TMalign.yaml'
+    threads: workflow.cores
+    script: '../scripts/012_FATCAT_twisted_pdbs_TMalign.py'
+
+
+
+rule extract_TMscore_from_TMalign_results:
+    input: 'tmp/{all_sequence_fasta}_TMalign_twisted_structures.out'
+    output: 'report/{all_sequence_fasta}_TMscores_from_TMalign_twisted_structure.tsv'
+    conda: '../envs/env_pLDDT_mean_calc.yaml'
+    script: '../scripts/013_extract_TMscore_TMalign.py'
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
