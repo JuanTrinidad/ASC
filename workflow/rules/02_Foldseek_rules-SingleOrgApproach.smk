@@ -31,9 +31,20 @@ rule foldseek_db_query_proteins:
 
 
 
-###############################################
-# CREATING FOLDSEEK DB FOR EACH MODEL ORGANISMS
-###############################################
+#############################################################################
+# DOWNLOADING MODEL SPECIES AND CREATING FOLDSEEK DB FOR EACH MODEL ORGANISMS
+#############################################################################
+
+
+rule download_model_organisms:
+  input:
+    '../config/mandatory_files/link_to_download_from_AFDB/{organism}.tar'
+  output:
+    temp('genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/{organism}.tar')
+  shell:
+    'wget -P genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/ https://ftp.ebi.ac.uk/pub/databases/alphafold/v4/{wildcards.organism}.tar'
+
+
 
 rule create_separates_DB_for_model_organisms:
   input: 
@@ -185,7 +196,7 @@ rule foldseek_search_Uniprot50DB:
     coverage = config['foldseek_search_against_Uniprot50_parameters']['coverage'],
     evalue = config['foldseek_search_against_Uniprot50_parameters']['evalue']
   shell:
-    'foldseek search {input.query[0]} {input.subject[0]} {params.path} ./tmp --threads {threads} -s {params.sensitivity} -c {params.coverage} -e {params.evalue}'    
+    'foldseek search {input.query[0]} {input.subject[0]} {params.path} /tmp --threads {threads} -s {params.sensitivity} -c {params.coverage} -e {params.evalue}'    
 '''  
     
     

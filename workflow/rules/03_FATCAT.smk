@@ -3,6 +3,7 @@
 
 rule unzip_uniprot_proteomes:
     input: 
+        '../results/reciprocal_best_hit_SingleOrgApproach_TSV/rbh_all_in_one_file.tsv',
         'genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/{proteome}.tar'
     output: 
         temp(directory('genome_data_sets/subject_proteomes/pdb_files/model_organisms_files_unzip/{proteome}/'))
@@ -72,7 +73,8 @@ rule cif_to_pdb:
 
 rule FATAT_aligment:
     input:
-        'tmp/{all_sequence_fasta}_query_taget_accesion_to_fatcat_list.tsv'
+        'tmp/{all_sequence_fasta}_query_taget_accesion_to_fatcat_list.tsv',
+        'tmp/{all_sequence_fasta}_cif_to_pdb.out'
     output:
         touch('tmp/{all_sequence_fasta}_FATCAT_aligment.out')
     conda: '../envs/env_pLDDT_mean_calc.yaml'

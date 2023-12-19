@@ -32,11 +32,11 @@ structure_from_outside_AFDB:
 ####
 mmseq2_query_sequences_clustering:
   mmseqs2_cluster_module: 'cluster' #cluster, linclust, easy-linclust
-  cluster_mode: 0
-  minimum_sequence_identity: 0
+  cluster_mode: 1
+  minimum_sequence_identity: 0.4
   minimum_coverage: 0.8
   coverage_mode: 0
-  evalue: !!float 1e-3
+  evalue: !!float 1e-5
   similarity_type: 2
   
 cluster_filtering:

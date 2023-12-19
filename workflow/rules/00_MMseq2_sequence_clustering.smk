@@ -44,7 +44,7 @@ rule mmseqs2_clustering_query_protein_sequences:
         evalue = config['mmseq2_query_sequences_clustering']['evalue']
         
     shell:
-        'mmseqs {params.mmseqs2_cluster_module} {input} {params.output_path} tmp --cluster-mode {params.cluster_mode} --similarity-type {params.similarity_type} --min-seq-id {params.minseqID} -c {params.mincoverage} --cov-mode {params.coveragemode} -e {params.evalue}'
+        'mmseqs {params.mmseqs2_cluster_module} {input} {params.output_path} /tmp --cluster-mode {params.cluster_mode} --similarity-type {params.similarity_type} --min-seq-id {params.minseqID} -c {params.mincoverage} --cov-mode {params.coveragemode} -e {params.evalue}'
         
 
 ##################################

@@ -9,6 +9,7 @@ __license__ = "MIT"
 ###################
 import pandas as pd
 import glob
+import pickle
 
 
 
@@ -36,14 +37,14 @@ print('Fasta file:\n' , initial_fasta_file_name, '\n')
 #-------------------------------------------------------
 # model organisms  
 #-------------------------------------------------------
-model_organisms_files = glob.glob('genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/*.tar')
+model_organisms_files = glob.glob('../config/mandatory_files/link_to_download_from_AFDB/*.tar')
 model_organisms_files_final = [file.split('/')[-1] for file in model_organisms_files]
 
 #individual org db files
 model_organisms_files_final_db = [file.split('/')[-1][:-4] for file in model_organisms_files]
 
 
-print('This are the model organisms files provided:')
+print('This are the model organisms that will be used from AFDB v4:')
 for file in model_organisms_files_final:
     print(file)
 
