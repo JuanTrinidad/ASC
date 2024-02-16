@@ -3,11 +3,11 @@
 
 
 
-#####################################
+########################################
 #
 # PROTEOMES ANNOTATION DATA FROM UNIPROT
 #
-#################################
+########################################
 
 rule download_proteomes_annotation_info:
   input: 'genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/{UP}_{num}_{spp}_{v}.tar'
@@ -23,11 +23,11 @@ rule concat_TSV_in_one_file:
     pd.concat([pd.read_csv(file, sep="\t",low_memory=False) for file in input]).to_csv(output[0], sep='\t')
     
 
-################################
+#########################################
 #
 # DATA BASES ANNOTATION DATA FROM UNIPROT
 #
-#################################    
+#########################################
 
 rule download_SwissProt_annotation_info:
   input: 'tmp/download_finished.out' #modificar

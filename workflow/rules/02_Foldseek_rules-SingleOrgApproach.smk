@@ -111,7 +111,7 @@ rule foldseek_reciprocal_best_hit_extract_result_tsv:
 
 rule foldseek_reciprocal_best_hit_concat_TSV:
   input:
-    expand('../results/reciprocal_best_hit_SingleOrgApproach_TSV/{all_sequence_fasta}_cluster_representer_vs_{organisms}.tsv', all_sequence_fasta = config['input_files']['all_sequence_fasta'].split('/')[-1][:-3] , organisms = model_organisms_files_final_db)
+    expand('../results/reciprocal_best_hit_SingleOrgApproach_TSV/{all_sequence_fasta}_cluster_representer_vs_{organisms}.tsv', all_sequence_fasta = initial_fasta_file_name_clean , organisms = model_organisms_files_final_db)
   output:
     '../results/reciprocal_best_hit_SingleOrgApproach_TSV/rbh_all_in_one_file.tsv'
   conda:

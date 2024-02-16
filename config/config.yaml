@@ -1,6 +1,6 @@
-###
+#############
 # INPUT FILES
-##
+#############
 
 #-------------------------------------------------------
 # optional output files
@@ -8,7 +8,7 @@
 
 fasta_file_of_non_modelated_clusters: 
   create_fasta_file: True
-  ortholog_group_above_this_num_of_members: 1
+  ortholog_group_above_this_num_of_members: 10
 
 #-------------------------------------------------------
 

@@ -1,5 +1,5 @@
 __author__ = "Juan Trinidad"
-__copyright__ = "Copyright 2023, Juan Trinidad"
+__copyright__ = "Copyright 2024, Juan Trinidad"
 __email__ = "jtrindad@fcien.edu.uy"
 __license__ = "MIT"
 
@@ -25,10 +25,14 @@ configfile: "../config/config.yaml"
 ################
 
 #-------------------------------------------------------
-#starting fasta file
+# starting fasta file
 #-------------------------------------------------------
-initial_fasta_file_name = config['input_files']['all_sequence_fasta'].split('/')[-1]
+initial_fasta_file_name = glob.glob('genome_data_sets/query_proteomes/fasta_files/*.fa')[0]
 print('Fasta file:\n' , initial_fasta_file_name, '\n')
+
+initial_fasta_file_name_clean = initial_fasta_file_name.split('/')[-1][:-3]
+
+print(initial_fasta_file_name_clean)
 #-------------------------------------------------------
 
 
@@ -48,9 +52,10 @@ print('This are the model organisms that will be used from AFDB v4:')
 for file in model_organisms_files_final:
     print(file)
 
-
 #-------------------------------------------------------
     
+
+
 #### CIF ###
 #cif_files = [cif for cif in glob.glob('tmp/FATCAT_pdb_files/*.cif')]
   
@@ -66,11 +71,10 @@ for file in model_organisms_files_final:
 #-------------------------------------------------------
 
 
-
 # name="some/file.txt" if config["condition"] else "other/file.txt"
 
 #print('protein_sequences_from_cluster_wo_structure_in_AFDB.fasta' if config['fasta_file_of_non_modelated_clusters']['create_fasta_file'] else 'config/mandatory_files/fasta_header_to_uniprot.tsv')
-#optional_file = 'protein_sequences_from_cluster_wo_structure_in_AFDB.fasta' if config['fasta_file_of_non_modelated_clusters']['create_fasta_file'] else '../config/mandatory_files/fasta_header_to_uniprot.tsv'
+optional_file = f'report/fasta_files/{initial_fasta_file_name_clean}_protein_sequences_from_cluster_wo_structure_in_AFDB.fasta' if config['fasta_file_of_non_modelated_clusters']['create_fasta_file'] else '../config/mandatory_files/fasta_header_to_uniprot.tsv'
 
 
 
@@ -82,8 +86,10 @@ include:'rules/03_FATCAT.smk'
 include:'rules/04_Downloading_annotation_from_uniprot.smk'
 
 rule all: 
-  input: 'tmp/TriTrypDB-65_All_species_clean_extract_twisted_structures.out' #, 'report/TriTrypDB-65_All_species_clean_TMscores_from_TMalign_twisted_structure.tsv'
+  input: f'tmp/{initial_fasta_file_name_clean}_extract_twisted_structures.out'
   
+  
+  #, optional_file #, 'report/TriTrypDB-65_All_species_clean_TMscores_from_TMalign_twisted_structure.tsv'
   #expand('genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}', organisms = model_organisms_files_final_db)
   #expand('tmp/FATCAT_pdb_files/{file}.cif', file = cif_files)
   #expand('genome_data_sets/subject_proteomes/foldseek_data_base/individual_org_DB/{organisms}', organisms = model_organisms_files_final_db)

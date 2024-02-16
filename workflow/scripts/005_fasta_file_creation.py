@@ -3,6 +3,7 @@
 
 # In[33]:
 
+print('0')
 
 import pandas as pd
 from Bio import SeqIO
@@ -56,6 +57,7 @@ report_ortho_g = snakemake.input.report_ortho_g
 ortho_info = snakemake.input.ortho_info
 
 
+
 output_fasta_file = snakemake.output.output_fasta_file
 ortho_group_size = snakemake.params.OG_size
 
@@ -78,7 +80,7 @@ df_Oinfo = pd.read_csv(ortho_info,
             names= ['OG','geneID'])
 
 
-# In[28]:
+
 
 
 #clusters without uniprot accession in the report of downloaded structures from AFDB
@@ -111,7 +113,7 @@ df_Oinfo_cluster_of_interest = df_Oinfo[df_Oinfo.OG.isin(df_count_gt.index)]['ge
 
 
 #creating fasta file
-looking_in_fasta_file(df_Oinfo_cluster_of_interest, 'report_files/fasta_files/', output_fasta_file, fasta_file_input)
+looking_in_fasta_file(df_Oinfo_cluster_of_interest, 'report/fasta_files/', output_fasta_file, fasta_file_input)
 
 
 # In[ ]:

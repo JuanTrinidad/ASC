@@ -102,3 +102,22 @@ rule cluster_representer_protein_structures:
   script:
     '../scripts/004_cluster_representative_protein_structures_selection_to_db.py'
 
+
+
+#########################################
+# CREATE FASTA FOR NON MODELATED CLUSTERS
+#########################################
+
+rule fasta_of_orthoGroups_without_structure_in_AFDB:
+  input: 
+    original_fasta = 'genome_data_sets/query_proteomes/fasta_files/{all_sequence_fasta}.fa',
+    report_ortho_g = 'report/{all_sequence_fasta}_ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv',
+    ortho_info = 'report/{all_sequence_fasta}_Ortholog_group_to_geneID.tsv'    
+  output:
+    output_fasta_file = 'report/fasta_files/{all_sequence_fasta}_protein_sequences_from_cluster_wo_structure_in_AFDB.fasta'
+  conda:
+    '../envs/env_pLDDT_mean_calc.yaml'
+  params:
+    OG_size = config['fasta_file_of_non_modelated_clusters']['ortholog_group_above_this_num_of_members']
+  script:
+    '../scripts/005_fasta_file_creation.py'
