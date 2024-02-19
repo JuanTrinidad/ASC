@@ -1,17 +1,6 @@
 
 
 
-
-
-
-
-###############################
-#
-#
-#
-################################
-
-
 rule downloading_and_coping_files_to_FACTCATfolder:
     input: 
         file1 = '../results/reciprocal_best_hit_SingleOrgApproach_TSV/rbh_all_in_one_file.tsv',
@@ -27,35 +16,7 @@ rule downloading_and_coping_files_to_FACTCATfolder:
     script: '../scripts/007_downloading_pdb_fromAFDB.py'
 
 
-################
-# CLONING GITHUB
-################
 
-
-rule clone_FATCAT_repository:
-    input: expand('tmp/{name}_query_taget_accesion_to_fatcat_list.tsv', name = initial_fasta_file_name_clean)
-    output: 'git_repo_cloned/FATCAT/Install'
-    shell: 'git clone https://github.com/GodzikLab/FATCAT-dist.git git_repo_cloned/FATCAT'
-    
-    
-###################
-# INSTALLING FATCAT
-###################
-
-rule installing_FATCAT_repository:
-    input: 'git_repo_cloned/FATCAT/Install'
-    output: touch('tmp/FATCAT_installed_sucesfully.out')
-    shell: '''
-    cd git_repo_cloned/FATCAT/
-    ./Install
-    
-    '''
-
-
-
-#################
-# USING FATCAT
-#################
 
 #ver de usar la funcion para levantar archivos y que esto sea mas rapdio
 def get_gz_files(wildcards):
@@ -65,8 +26,7 @@ def get_gz_files(wildcards):
 
 rule FATAT_aligment:
     input:
-        'tmp/{all_sequence_fasta}_query_taget_accesion_to_fatcat_list.tsv',
-        'tmp/FATCAT_installed_sucesfully.out'
+        'tmp/{all_sequence_fasta}_query_taget_accesion_to_fatcat_list.tsv'
     output:
         touch('tmp/{all_sequence_fasta}_FATCAT_aligment.out')
     conda: '../envs/env_pLDDT_mean_calc.yaml'
@@ -114,7 +74,30 @@ rule extract_TMscore_from_TMalign_results:
 
 
 
+################
+# CLONING GITHUB
+################
 
+
+rule clone_FATCAT_repository:
+    output: 'git_repo_cloned/FATCAT/Install'
+    shell: 'git clone https://github.com/GodzikLab/FATCAT-dist.git git_repo_cloned/FATCAT'
+    
+    
+###################
+# INSTALLING FATCAT
+###################
+
+rule installing_FATCAT_repository:
+    input: 'git_repo_cloned/FATCAT/Install'
+    output: touch('tmp/FATCAT_installed_sucesfully.out')
+    shell: '''
+    cd git_repo_cloned/FATCAT/
+    ./Install
+    
+    '''
+    
+    
 rule run_FATCAT:
     input: 'tmp/FATCAT_installed_sucesfully.out'
     output: '/tmp/probando.out'

@@ -54,7 +54,8 @@ rule pLDDT_mean_calculation:
 rule checking_if_SameSimilar_fastaseq_vs_pdbseq:
   input:
     fh_to_uniprot = config['input_files']['header_to_uniprot'],
-    fasta_query_db = 'genome_data_sets/query_proteomes/fasta_files/{all_sequence_fasta}.fa'
+    fasta_query_db = 'genome_data_sets/query_proteomes/fasta_files/{all_sequence_fasta}.fa',
+    tmp_download = 'tmp/{all_sequence_fasta}_download_finished.out'
   output:
     'tmp/{all_sequence_fasta}_sequence_comparison_between_fasta_and_downloadedPDBfile.tsv'
   threads:

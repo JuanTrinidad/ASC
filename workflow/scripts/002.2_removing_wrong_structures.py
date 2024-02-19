@@ -128,7 +128,7 @@ def align_fasta_sequence_parallel(num_threads):
 
 
 
-salida = align_fasta_sequence_parallel(40)
+salida = align_fasta_sequence_parallel(snakemake.threads)
 
 
 

@@ -42,10 +42,11 @@ rule mmseqs2_clustering_query_protein_sequences:
         coveragemode = config['mmseq2_query_sequences_clustering']['coverage_mode'],
         output_path = 'genome_data_sets/query_proteomes/mmseqs2_seq_clusters/{all_sequence_fasta}',
         evalue = config['mmseq2_query_sequences_clustering']['evalue']
-        
+    threads:
+        workflow.cores
     shell:
-        'mmseqs {params.mmseqs2_cluster_module} {input} {params.output_path} /tmp --cluster-mode {params.cluster_mode} --similarity-type {params.similarity_type} --min-seq-id {params.minseqID} -c {params.mincoverage} --cov-mode {params.coveragemode} -e {params.evalue}'
-        
+        'mmseqs {params.mmseqs2_cluster_module} {input} {params.output_path} /tmp --cluster-mode {params.cluster_mode} --similarity-type {params.similarity_type} --min-seq-id {params.minseqID} -c {params.mincoverage} --cov-mode {params.coveragemode} -e {params.evalue} --threads {threads}'
+              
 
 ##################################
 # extract TSV file from clustering

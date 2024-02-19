@@ -42,7 +42,7 @@ rule download_model_organisms:
   output:
     temp('genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/{organism}.tar')
   shell:
-    'wget -P genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/ https://ftp.ebi.ac.uk/pub/databases/alphafold/v4/{wildcards.organism}.tar'
+    'wget -q -P genome_data_sets/subject_proteomes/pdb_files/model_organisms_files/ https://ftp.ebi.ac.uk/pub/databases/alphafold/v4/{wildcards.organism}.tar'
 
 
 
