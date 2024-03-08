@@ -39,7 +39,7 @@ for file in glob.glob('tmp/FATCAT_pdb_files/*.pdb'):
 #checking if the uniprot names are in the dataframe
 df = (
 df[
-    df['new_simple_name'].isin(uniprot_names) &
+    df['query_uniprot_accession'].isin(uniprot_names) &
     df['target_uniprot_accession'].isin(uniprot_names)
 ]
 )
@@ -57,7 +57,7 @@ command_args = []
 
 for index, row in df.iterrows():
     pdb1 = row['target_uniprot_accession']
-    pdb2 = row['new_simple_name'] 
+    pdb2 = row['query_uniprot_accession'] 
 
     command_args.append(["git_repo_cloned/FATCAT/FATCATMain/FATCAT", 
                          "-p1", f"tmp/FATCAT_pdb_files/{pdb1}.pdb",

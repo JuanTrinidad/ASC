@@ -25,7 +25,7 @@ input_files:
 
 #If strucutres added prefix 
 structure_from_outside_AFDB:
-  prefix_in_PDB_name: 'wheelerlab_'
+  prefix_in_PDB_name: 'local_'
 
 ####
 # after creating the mmseqs2 db from the query protein sequences we reduce the database by clustering
@@ -74,3 +74,6 @@ foldseek_clustering_model_org_DB_parameters:
   cov_mode: 0
   coverage: 0.9
   evalue: !!float 1e-2
+
+
+#agregar la cantidad de top hits que se quieren

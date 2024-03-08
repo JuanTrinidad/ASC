@@ -31,9 +31,8 @@ rule downloading_and_coping_files_to_FACTCATfolder:
 # CLONING GITHUB
 ################
 
-
+#input: expand('tmp/{name}_query_taget_accesion_to_fatcat_list.tsv', name = initial_fasta_file_name_clean)
 rule clone_FATCAT_repository:
-    input: expand('tmp/{name}_query_taget_accesion_to_fatcat_list.tsv', name = initial_fasta_file_name_clean)
     output: 'git_repo_cloned/FATCAT/Install'
     shell: 'git clone https://github.com/GodzikLab/FATCAT-dist.git git_repo_cloned/FATCAT'
     
@@ -63,7 +62,7 @@ rule installing_FATCAT_repository:
 
 
 
-rule FATAT_aligment:
+rule FATCAT_aligment:
     input:
         'tmp/{all_sequence_fasta}_query_taget_accesion_to_fatcat_list.tsv',
         'tmp/FATCAT_installed_sucesfully.out'
