@@ -24,7 +24,7 @@ rule downloading_and_coping_files_to_FACTCATfolder:
         top_hits = 5,
         prefix_of_added_pdbs = config['structure_from_outside_AFDB']['prefix_in_PDB_name']
     threads: workflow.cores 
-    script: '../scripts/007_downloading_pdb_fromAFDB.py'
+    script: '../scripts/007_downloading_pdb_from_AFDB.py'
 
 
 ################
@@ -58,8 +58,8 @@ rule installing_FATCAT_repository:
 #################
 
 #ver de usar la funcion para levantar archivos y que esto sea mas rapdio
-def get_gz_files(wildcards):
-    return glob.glob("tmp/FATCAT_pdb_files/*.gz")
+#def get_gz_files(wildcards):
+#    return glob.glob("tmp/FATCAT_pdb_files/*.gz")
 
 
 
