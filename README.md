@@ -43,10 +43,10 @@ Input Files:
 
 ## How to Run the Pipeline:
 
-# Requirementes
+### Requirementes
 * Install snakemake: https://snakemake.readthedocs.io/en/stable/getting_started/installation.html
 
-# Running
-1- Clone the repository: git clone https://github.com/JuanTrinidad/ASC
-2- Adjust the parameters in the config file located in the config directory.
-3- Activate snakemake virtual enviroment (mamba) and execute the workflow using Snakemake `snakemake --snakefile workflow/snakemake_ASC.smk`
+### Running
+1. Clone the repository: git clone https://github.com/JuanTrinidad/ASC
+2. Adjust the parameters in the config file located in the config directory.
+3. Activate snakemake virtual enviroment (mamba) and execute the workflow using Snakemake `snakemake --snakefile workflow/snakemake_ASC.smk`
