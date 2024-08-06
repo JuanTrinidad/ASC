@@ -15,3 +15,10 @@ workflow/git_repo_cloned/
 workflow/snakemake_ortholog_groups-before_rules.yaml
 workflow/eukaryota_odb*
 .ipynb_checkpoints/
+workflow/notebooks/.ipynb_checkpoints/
+workflow/rules/.ipynb_checkpoints/
+workflow/scripts/.ipynb_checkpoints/
+workflow/envs/.ipynb_checkpoints/
+workflow/scripts/rules_scripts/
+
+workflow/notebooks/old*
