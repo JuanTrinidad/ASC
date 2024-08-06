@@ -16,10 +16,10 @@ Input Files:
 
 
 
-Pipeline Overview:
-* Clustering Sequences:
-    Protein sequences are clustered using MMseqs2, with user-defined parameters for the minimum number of proteins per cluster.
-    Clusters are filtered based on the number of sequences.
+### Pipeline Overview:
+* Clustering Sequences: 
+    * Protein sequences are clustered using MMseqs2, with user-defined parameters for the minimum number of proteins per cluster. 
+    * Clusters are filtered based on the number of sequences.
 
 Structure Download:
 The pipeline downloads all available structures for the sequences within the clusters from the AlphaFold Database (AFDB) via FTP.
