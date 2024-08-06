@@ -48,6 +48,8 @@ model_organisms_files_final = [file.split('/')[-1] for file in model_organisms_f
 model_organisms_files_final_db = [file.split('/')[-1][:-4] for file in model_organisms_files]
 
 
+
+
 print('This are the model organisms that will be used from AFDB v4:')
 for file in model_organisms_files_final:
     print(file)
@@ -88,6 +90,9 @@ include:'rules/04_Downloading_annotation_from_uniprot.smk'
 rule all: 
   input: f'tmp/{initial_fasta_file_name_clean}_extract_twisted_structures.out', f'report/{initial_fasta_file_name_clean}_TMscores_from_TMalign_twisted_structure.tsv'
   
+  
+  #f'tmp/{initial_fasta_file_name_clean}_extract_twisted_structures.out', f'report/{initial_fasta_file_name_clean}_TMscores_from_TMalign_twisted_structure.tsv'
+  
   #, 'protein_data_bases/annotation_info/Gene_annotation_info_from_uniprot_model_spp.tsv','protein_data_bases/annotation_info/kinetoplastea_taxid5653_annotation_info_from_uniprot.tsv'
 
   #, optional_file #, 'report/TriTrypDB-65_All_species_clean_TMscores_from_TMalign_twisted_structure.tsv'
@@ -111,9 +116,18 @@ rule all:
     #optional_file,
     #'genome_data_sets/subject_proteomes/foldseek_data_base/all_org_DB/all_model_organisms_DB'
     
-    
-    
+
+#rule download_fasta_file_proteome:
+#  input:
+#    '../config/mandatory_files/link_to_download_from_AFDB/{UP}_{num1}_{etc}_v4.tar'
+#  output:
+#    touch('/tmp/{UP}_{num1}_{etc}_trash.out')
+#  shell:
+#    'wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/{wildcards.UP}/{wildcards.UP}_{wildcards.num1}.fasta.gz'
+  
    
+
+#https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000007305/UP000007305_4577.fasta.gz
     
 
 

@@ -1,0 +1,406 @@
+Building DAG of jobs...
+Using shell: /usr/bin/bash
+Provided cores: 20
+Rules claiming more threads will be scaled down.
+Job stats:
+job                             count    min threads    max threads
+----------------------------  -------  -------------  -------------
+all                                 1              1              1
+download_fasta_file_proteome       18              1              1
+total                              19              1              1
+
+Select jobs to execute...
+
+[Thu Mar 21 17:30:20 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000002716_300267_SHIDS_v4.tar
+    output: /tmp/UP000002716_300267_SHIDS_trash.out
+    jobid: 4
+    reason: Missing output files: /tmp/UP000002716_300267_SHIDS_trash.out
+    wildcards: UP=UP000002716, num1=300267, etc=SHIDS
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000579_71421_HAEIN_v4.tar
+    output: /tmp/UP000000579_71421_HAEIN_trash.out
+    jobid: 36
+    reason: Missing output files: /tmp/UP000000579_71421_HAEIN_trash.out
+    wildcards: UP=UP000000579, num1=71421, etc=HAEIN
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000535_242231_NEIG1_v4.tar
+    output: /tmp/UP000000535_242231_NEIG1_trash.out
+    jobid: 8
+    reason: Missing output files: /tmp/UP000000535_242231_NEIG1_trash.out
+    wildcards: UP=UP000000535, num1=242231, etc=NEIG1
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000002438_208964_PSEAE_v4.tar
+    output: /tmp/UP000002438_208964_PSEAE_trash.out
+    jobid: 29
+    reason: Missing output files: /tmp/UP000002438_208964_PSEAE_trash.out
+    wildcards: UP=UP000002438, num1=208964, etc=PSEAE
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000806_272631_MYCLE_v4.tar
+    output: /tmp/UP000000806_272631_MYCLE_trash.out
+    jobid: 2
+    reason: Missing output files: /tmp/UP000000806_272631_MYCLE_trash.out
+    wildcards: UP=UP000000806, num1=272631, etc=MYCLE
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000805_243232_METJA_v4.tar
+    output: /tmp/UP000000805_243232_METJA_trash.out
+    jobid: 31
+    reason: Missing output files: /tmp/UP000000805_243232_METJA_trash.out
+    wildcards: UP=UP000000805, num1=243232, etc=METJA
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000008816_93061_STAA8_v4.tar
+    output: /tmp/UP000008816_93061_STAA8_trash.out
+    jobid: 40
+    reason: Missing output files: /tmp/UP000008816_93061_STAA8_trash.out
+    wildcards: UP=UP000008816, num1=93061, etc=STAA8
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000625_83333_ECOLI_v4.tar
+    output: /tmp/UP000000625_83333_ECOLI_trash.out
+    jobid: 41
+    reason: Missing output files: /tmp/UP000000625_83333_ECOLI_trash.out
+    wildcards: UP=UP000000625, num1=83333, etc=ECOLI
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000020681_1299332_MYCUL_v4.tar
+    output: /tmp/UP000020681_1299332_MYCUL_trash.out
+    jobid: 1
+    reason: Missing output files: /tmp/UP000020681_1299332_MYCUL_trash.out
+    wildcards: UP=UP000020681, num1=1299332, etc=MYCUL
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000586_171101_STRR6_v4.tar
+    output: /tmp/UP000000586_171101_STRR6_trash.out
+    jobid: 26
+    reason: Missing output files: /tmp/UP000000586_171101_STRR6_trash.out
+    wildcards: UP=UP000000586, num1=171101, etc=STRR6
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000001584_83332_MYCTU_v4.tar
+    output: /tmp/UP000001584_83332_MYCTU_trash.out
+    jobid: 3
+    reason: Missing output files: /tmp/UP000001584_83332_MYCTU_trash.out
+    wildcards: UP=UP000001584, num1=83332, etc=MYCTU
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000006304_1133849_9NOCA1_v4.tar
+    output: /tmp/UP000006304_1133849_9NOCA1_trash.out
+    jobid: 19
+    reason: Missing output files: /tmp/UP000006304_1133849_9NOCA1_trash.out
+    wildcards: UP=UP000006304, num1=1133849, etc=9NOCA1
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000325664_1352_ENTFC_v4.tar
+    output: /tmp/UP000325664_1352_ENTFC_trash.out
+    jobid: 35
+    reason: Missing output files: /tmp/UP000325664_1352_ENTFC_trash.out
+    wildcards: UP=UP000325664, num1=1352, etc=ENTFC
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000429_85962_HELPY_v4.tar
+    output: /tmp/UP000000429_85962_HELPY_trash.out
+    jobid: 23
+    reason: Missing output files: /tmp/UP000000429_85962_HELPY_trash.out
+    wildcards: UP=UP000000429, num1=85962, etc=HELPY
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000001014_99287_SALTY_v4.tar
+    output: /tmp/UP000001014_99287_SALTY_trash.out
+    jobid: 12
+    reason: Missing output files: /tmp/UP000001014_99287_SALTY_trash.out
+    wildcards: UP=UP000001014, num1=99287, etc=SALTY
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000007841_1125630_KLEPH_v4.tar
+    output: /tmp/UP000007841_1125630_KLEPH_trash.out
+    jobid: 32
+    reason: Missing output files: /tmp/UP000007841_1125630_KLEPH_trash.out
+    wildcards: UP=UP000007841, num1=1125630, etc=KLEPH
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000030665_36087_TRITR_v4.tar
+    output: /tmp/UP000030665_36087_TRITR_trash.out
+    jobid: 42
+    reason: Missing output files: /tmp/UP000030665_36087_TRITR_trash.out
+    wildcards: UP=UP000030665, num1=36087, etc=TRITR
+    resources: tmpdir=/tmp
+
+
+[Thu Mar 21 17:30:21 2024]
+rule download_fasta_file_proteome:
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000799_192222_CAMJE_v4.tar
+    output: /tmp/UP000000799_192222_CAMJE_trash.out
+    jobid: 18
+    reason: Missing output files: /tmp/UP000000799_192222_CAMJE_trash.out
+    wildcards: UP=UP000000799, num1=192222, etc=CAMJE
+    resources: tmpdir=/tmp
+
+[Thu Mar 21 17:30:22 2024]
+[Thu Mar 21 17:30:22 2024]
+Error in rule download_fasta_file_proteome:
+    jobid: 29
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000002438_208964_PSEAE_v4.tar
+    output: /tmp/UP000002438_208964_PSEAE_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000002438/UP000002438_208964.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Error in rule download_fasta_file_proteome:
+    jobid: 2
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000806_272631_MYCLE_v4.tar
+    output: /tmp/UP000000806_272631_MYCLE_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000000806/UP000000806_272631.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+[Thu Mar 21 17:30:22 2024]
+Error in rule download_fasta_file_proteome:
+    jobid: 8
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000535_242231_NEIG1_v4.tar
+    output: /tmp/UP000000535_242231_NEIG1_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000000535/UP000000535_242231.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+[Thu Mar 21 17:30:22 2024]
+Error in rule download_fasta_file_proteome:
+    jobid: 36
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000579_71421_HAEIN_v4.tar
+    output: /tmp/UP000000579_71421_HAEIN_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000000579/UP000000579_71421.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+[Thu Mar 21 17:30:22 2024]
+Error in rule download_fasta_file_proteome:
+    jobid: 4
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000002716_300267_SHIDS_v4.tar
+    output: /tmp/UP000002716_300267_SHIDS_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000002716/UP000002716_300267.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+[Thu Mar 21 17:30:22 2024]
+Error in rule download_fasta_file_proteome:
+    jobid: 31
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000805_243232_METJA_v4.tar
+    output: /tmp/UP000000805_243232_METJA_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000000805/UP000000805_243232.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+[Thu Mar 21 17:30:22 2024]
+Error in rule download_fasta_file_proteome:
+    jobid: 41
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000625_83333_ECOLI_v4.tar
+    output: /tmp/UP000000625_83333_ECOLI_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000000625/UP000000625_83333.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+[Thu Mar 21 17:30:22 2024]
+Error in rule download_fasta_file_proteome:
+    jobid: 40
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000008816_93061_STAA8_v4.tar
+    output: /tmp/UP000008816_93061_STAA8_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000008816/UP000008816_93061.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+[Thu Mar 21 17:30:22 2024]
+Error in rule download_fasta_file_proteome:
+    jobid: 1
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000020681_1299332_MYCUL_v4.tar
+    output: /tmp/UP000020681_1299332_MYCUL_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000020681/UP000020681_1299332.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+[Thu Mar 21 17:30:22 2024]
+[Thu Mar 21 17:30:22 2024]
+[Thu Mar 21 17:30:22 2024]
+[Thu Mar 21 17:30:22 2024]
+[Thu Mar 21 17:30:22 2024]
+Error in rule download_fasta_file_proteome:
+    jobid: 3
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000001584_83332_MYCTU_v4.tar
+    output: /tmp/UP000001584_83332_MYCTU_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000001584/UP000001584_83332.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+[Thu Mar 21 17:30:22 2024]
+Error in rule download_fasta_file_proteome:
+    jobid: 26
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000586_171101_STRR6_v4.tar
+    output: /tmp/UP000000586_171101_STRR6_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000000586/UP000000586_171101.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Error in rule download_fasta_file_proteome:
+    jobid: 32
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000007841_1125630_KLEPH_v4.tar
+    output: /tmp/UP000007841_1125630_KLEPH_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000007841/UP000007841_1125630.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Error in rule download_fasta_file_proteome:
+    jobid: 19
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000006304_1133849_9NOCA1_v4.tar
+    output: /tmp/UP000006304_1133849_9NOCA1_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000006304/UP000006304_1133849.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Error in rule download_fasta_file_proteome:
+    jobid: 12
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000001014_99287_SALTY_v4.tar
+    output: /tmp/UP000001014_99287_SALTY_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000001014/UP000001014_99287.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+[Thu Mar 21 17:30:22 2024]
+Error in rule download_fasta_file_proteome:
+    jobid: 23
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000429_85962_HELPY_v4.tar
+    output: /tmp/UP000000429_85962_HELPY_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000000429/UP000000429_85962.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+[Thu Mar 21 17:30:22 2024]
+[Thu Mar 21 17:30:22 2024]
+Error in rule download_fasta_file_proteome:
+    jobid: 42
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000030665_36087_TRITR_v4.tar
+    output: /tmp/UP000030665_36087_TRITR_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000030665/UP000030665_36087.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Error in rule download_fasta_file_proteome:
+    jobid: 18
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000000799_192222_CAMJE_v4.tar
+    output: /tmp/UP000000799_192222_CAMJE_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000000799/UP000000799_192222.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Error in rule download_fasta_file_proteome:
+    jobid: 35
+    input: ../config/mandatory_files/link_to_download_from_AFDB/UP000325664_1352_ENTFC_v4.tar
+    output: /tmp/UP000325664_1352_ENTFC_trash.out
+    shell:
+        wget -q -P notebooks/Data_inspection/BUSCO/ref_prot_fasta/ https://ftp.uniprot.org/pub/databases/uniprot/current_release/knowledgebase/reference_proteomes/Eukaryota/UP000325664/UP000325664_1352.fasta.gz
+        (one of the commands exited with non-zero exit code; note that snakemake uses bash strict mode!)
+
+Exiting because a job execution failed. Look above for error message
+Complete log: .snakemake/log/2024-03-21T173019.658463.snakemake.log
+Fasta file:
+ genome_data_sets/query_proteomes/fasta_files/TriTrypDB-65_All_species_clean.fa 
+
+TriTrypDB-65_All_species_clean
+This are the model organisms that will be used from AFDB v4:
+UP000020681_1299332_MYCUL_v4.tar
+UP000000806_272631_MYCLE_v4.tar
+UP000001584_83332_MYCTU_v4.tar
+UP000002716_300267_SHIDS_v4.tar
+UP000000559_237561_CANAL_v4.tar
+UP000053029_1442368_9EURO2_v4.tar
+UP000274756_318479_DRAME_v4.tar
+UP000000535_242231_NEIG1_v4.tar
+UP000002311_559292_YEAST_v4.tar
+UP000008827_3847_SOYBN_v4.tar
+UP000002485_284812_SCHPO_v4.tar
+UP000001014_99287_SALTY_v4.tar
+UP000000437_7955_DANRE_v4.tar
+UP000059680_39947_ORYSJ_v4.tar
+UP000008854_6183_SCHMA_v4.tar
+UP000002494_10116_RAT_v4.tar
+UP000078237_100816_9PEZI1_v4.tar
+UP000000799_192222_CAMJE_v4.tar
+UP000006304_1133849_9NOCA1_v4.tar
+UP000001631_447093_AJECG_v4.tar
+UP000007305_4577_MAIZE_v4.tar
+UP000094526_86049_9EURO1_v4.tar
+UP000000429_85962_HELPY_v4.tar
+UP000002059_502779_PARBA_v4.tar
+UP000270924_6293_WUCBA_v4.tar
+UP000000586_171101_STRR6_v4.tar
+UP000000803_7227_DROME_v4.tar
+UP000001940_6239_CAEEL_v4.tar
+UP000002438_208964_PSEAE_v4.tar
+UP000006548_3702_ARATH_v4.tar
+UP000000805_243232_METJA_v4.tar
+UP000007841_1125630_KLEPH_v4.tar
+UP000001450_36329_PLAF7_v4.tar
+UP000000589_10090_MOUSE_v4.tar
+UP000325664_1352_ENTFC_v4.tar
+UP000000579_71421_HAEIN_v4.tar
+UP000005640_9606_HUMAN_v4.tar
+UP000018087_1391915_SPOS1_v4.tar
+UP000006672_6279_BRUMA_v4.tar
+UP000008816_93061_STAA8_v4.tar
+UP000000625_83333_ECOLI_v4.tar
+UP000030665_36087_TRITR_v4.tar
+UP000024404_6282_ONCVO_v4.tar
+UP000035681_6248_STRER_v4.tar
+UP000002195_44689_DICDI_v4.tar
