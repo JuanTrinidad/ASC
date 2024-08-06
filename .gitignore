@@ -14,3 +14,4 @@ workflow/report/
 workflow/git_repo_cloned/
 workflow/snakemake_ortholog_groups-before_rules.yaml
 workflow/eukaryota_odb*
+.ipynb_checkpoints/
