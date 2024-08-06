@@ -1,4 +1,4 @@
-# ASC Snakemake workflow
+# Snakemake workflow: ASC
 
 Welcome to the ASC (Annotation by Structural Comparisons) Pipeline!
 
