@@ -9,7 +9,7 @@ This repository contains the implementation of the ASC pipeline, which leverages
 * Config Directory: Contains the config.yaml file where you can adjust parameters according to your requirements.
 
 
-### Prerequisites:
+### Prerequisites files:
 Input Files:
 * A FASTA file containing the protein sequences to be annotated.
 * A TSV file linking the FASTA headers with UniProt accessions for AFDB protein structure download.
@@ -21,19 +21,32 @@ Input Files:
     * Protein sequences are clustered using MMseqs2, with user-defined parameters for the minimum number of proteins per cluster. 
     * Clusters are filtered based on the number of sequences.
 
-Structure Download:
-The pipeline downloads all available structures for the sequences within the clusters from the AlphaFold Database (AFDB) via FTP.
-Inconsistencies between sequences from different databases are prevented by comparing each protein structure with the sequences in the FASTA file.
-The best structure prediction for each cluster is chosen based on the average pLDDT.
-Database Creation:
+* Structure Download:
+    * The pipeline downloads all available structures for the sequences within the clusters from the AlphaFold Database (AFDB) via FTP.
+    * Inconsistencies between sequences from fasta file and PDB files are prevented by protein sequence aligment.
+    * The best structure prediction for each cluster is chosen based on the average pLDDT.
 
-A database for the Foldseek program is created using the representative structures.
-Clusters without available protein structures are excluded from the analysis.
-Model Organism Databases:
+* Database Creation:
+    * A database for the Foldseek program is created using the representative structures.
+    * Clusters without available protein structures are excluded from the analysis.
 
-Snakemake downloads all available model organisms from AFDB and creates independent databases for each organism.
-Structural Comparisons:
+* Model Organism Databases:
+    * Snakemake downloads all available model organisms from AFDB and creates independent databases for each organism.
 
-Using Foldseek reciprocal-best-hit (SRBH), comparisons are performed between the query database and each target database.
-The pipeline selects the top SRBH results as specified by the user and performs flexible structural alignments using the FATCAT algorithm.
-TM-scores are calculated for the aligned structures using the TM-align algorithm.
+* Structural Comparisons:
+    * Using Foldseek reciprocal-best-hit (SRBH), comparisons are performed between the query database and each target database.
+    * The pipeline selects the top SRBH results as specified by the user and performs flexible structural alignments using the FATCAT algorithm.
+    * TM-scores are calculated for the aligned structures using the TM-align algorithm.
+
+* Results
+    * Results directory: After the snamkemake run, this directory will be created with Tables resuming results.
+
+## How to Run the Pipeline:
+
+# Requirementes
+* Install snakemake: https://snakemake.readthedocs.io/en/stable/getting_started/installation.html
+
+# Running
+1- Clone the repository: git clone https://github.com/JuanTrinidad/ASC
+2- Adjust the parameters in the config file located in the config directory.
+3- Activate snakemake virtual enviroment (mamba) and execute the workflow using Snakemake `snakemake --snakefile workflow/snakemake_ASC.smk`
