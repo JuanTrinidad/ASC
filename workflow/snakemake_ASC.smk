@@ -62,7 +62,6 @@ optional_file = f'report/fasta_files/{initial_fasta_file_name_clean}_protein_seq
 
 
 
-include:'rules/testing.smk'
 include:'rules/00_MMseq2_sequence_clustering.smk'
 include:'rules/01_Downloading_Selecting_and_Filtering_PDBs.smk'
 include:'rules/02_Foldseek_rules-SingleOrgApproach.smk'
