@@ -5,6 +5,7 @@ config/mandatory_files/.ip*
 config/.ip*
 config/mandatory_files/fasta_*
 config/mandatory_files/GenesBy*
+config/mandatory_files/TrypTag*
 config/mandatory_files/old*
 .ipynb_checkpoints/
 
@@ -32,6 +33,7 @@ workflow/envs/.ipynb_checkpoints/
 workflow/scripts/.ipynb_checkpoints/
 
 workflow/scripts/rules_scripts/
+
 workflow/scripts/old_*
 
 workflow/notebooks/old*
