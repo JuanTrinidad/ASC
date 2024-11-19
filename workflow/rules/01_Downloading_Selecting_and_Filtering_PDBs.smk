@@ -54,7 +54,7 @@ rule pLDDT_mean_calculation:
 rule checking_if_SameSimilar_fastaseq_vs_pdbseq:
   input:
     fh_to_uniprot = config['input_files']['header_to_uniprot'],
-    fasta_query_db = 'genome_data_sets/query_proteomes/fasta_files/{all_sequence_fasta}.fa',
+    fasta_query_db = config['input_files']['all_sequence_fasta'],
     tmp_download = 'tmp/{all_sequence_fasta}_download_finished.out'
   output:
     'tmp/{all_sequence_fasta}_sequence_comparison_between_fasta_and_downloadedPDBfile.tsv'
@@ -111,7 +111,7 @@ rule cluster_representer_protein_structures:
 
 rule fasta_of_orthoGroups_without_structure_in_AFDB:
   input: 
-    original_fasta = 'genome_data_sets/query_proteomes/fasta_files/{all_sequence_fasta}.fa',
+    original_fasta = config['input_files']['all_sequence_fasta'],
     report_ortho_g = 'report/{all_sequence_fasta}_ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv',
     ortho_info = 'report/{all_sequence_fasta}_Ortholog_group_to_geneID.tsv'    
   output:
