@@ -7,6 +7,8 @@ config/mandatory_files/fasta_*
 config/mandatory_files/GenesBy*
 config/mandatory_files/TrypTag*
 config/mandatory_files/old*
+
+
 .ipynb_checkpoints/
 
 workflow/genome_data_sets/
