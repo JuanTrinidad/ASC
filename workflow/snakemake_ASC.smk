@@ -27,7 +27,7 @@ configfile: "../config/config.yaml"
 #-------------------------------------------------------
 # starting fasta file
 #-------------------------------------------------------
-initial_fasta_file_name = glob.glob('genome_data_sets/query_proteomes/fasta_files/*.fa')[0]
+initial_fasta_file_name = config['input_files']['all_sequence_fasta']
 print('Fasta file:\n' , initial_fasta_file_name, '\n')
 
 initial_fasta_file_name_clean = initial_fasta_file_name.split('/')[-1][:-3]
