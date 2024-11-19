@@ -17,8 +17,8 @@ fasta_file_of_non_modelated_clusters:
 
 
 input_files:
-  all_sequence_fasta: 'genome_data_sets/query_proteomes/fasta_files/TriTrypDB-65_All_species_clean.fa'
-  header_to_uniprot: '../config/mandatory_files/fasta_header_to_uniprot.tsv'
+  all_sequence_fasta: '../config/mandatory_files/'
+  header_to_uniprot: '../config/mandatory_files/toy_fasta_header_to_uniprot.tsv'
   ortholog_group_to_geneID: '../config/mandatory_files/Ortholog_group_to_geneID.tsv'
   
 
@@ -40,7 +40,7 @@ mmseq2_query_sequences_clustering:
   similarity_type: 2
   
 cluster_filtering:
-  cluster_size: 10
+  cluster_size: 0 #in the article we use 10 as threshold
   
   
 downloading_from_AFDB:

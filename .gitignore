@@ -1,6 +1,12 @@
 #ignore data
 results/
-config/mandatory_files/
+config/mandatory_files/*.pkl
+config/mandatory_files/.ip*
+config/.ip*
+config/mandatory_files/fasta_*
+config/mandatory_files/GenesBy*
+config/mandatory_files/old*
+.ipynb_checkpoints/
 
 workflow/genome_data_sets/
 workflow/tmp/
@@ -18,8 +24,14 @@ workflow/eukaryota_odb*
 
 workflow/notebooks/
 workflow/rules/.ipynb_checkpoints/
-workflow/scripts/.ipynb_checkpoints/
+workflow/rules/old_*
+workflow/rules/snakemake*
+workflow/rules/testing.smk
+
 workflow/envs/.ipynb_checkpoints/
+workflow/scripts/.ipynb_checkpoints/
+
 workflow/scripts/rules_scripts/
+workflow/scripts/old_*
 
 workflow/notebooks/old*

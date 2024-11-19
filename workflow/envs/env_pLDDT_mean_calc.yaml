@@ -7,3 +7,4 @@ dependencies:
   - biopython=1.*
   - pandas=1.5.3
   - python=3.11.3
+  - tqdm=4.*.*
