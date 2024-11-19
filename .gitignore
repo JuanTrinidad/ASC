@@ -36,6 +36,6 @@ workflow/scripts/.ipynb_checkpoints/
 
 workflow/scripts/rules_scripts/
 
-workflow/scripts/old_*
+workflow/scripts/old*
 
 workflow/notebooks/old*
