@@ -13,7 +13,7 @@
 
 rule mmseqs2_DB_query_protein_sequences:
     input: 
-        'genome_data_sets/query_proteomes/fasta_files/{all_sequence_fasta}.fa' #config['input_files']['all_sequence_fasta']
+        config['input_files']['all_sequence_fasta']
     output: 
         'genome_data_sets/query_proteomes/mmseqs2_data_base/{all_sequence_fasta}.db'
     conda: 
@@ -28,7 +28,7 @@ rule mmseqs2_DB_query_protein_sequences:
         
 rule mmseqs2_clustering_query_protein_sequences:
     input:
-        'genome_data_sets/query_proteomes/mmseqs2_data_base/{all_sequence_fasta}.db' #'genome_data_sets/query_proteomes/mmseqs2_data_base/' + initial_fasta_file_name + '.db'
+        'genome_data_sets/query_proteomes/mmseqs2_data_base/{all_sequence_fasta}.db'
     output:
         multiext('genome_data_sets/query_proteomes/mmseqs2_seq_clusters/{all_sequence_fasta}', '.index', '.dbtype')
     conda:
