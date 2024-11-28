@@ -21,7 +21,7 @@ rule downloading_and_coping_files_to_FACTCATfolder:
         '../envs/env_pLDDT_mean_calc.yaml'
     params: 
         destination_dir = 'tmp/FATCAT_pdb_files/',
-        top_hits = 5,
+        top_hits = config['FATCAT_top_N_hits_to_align']['top_N_hits'],
         prefix_of_added_pdbs = config['structure_from_outside_AFDB']['prefix_in_PDB_name']
     threads: workflow.cores 
     script: '../scripts/007_downloading_pdb_from_AFDB.py'
@@ -31,7 +31,7 @@ rule downloading_and_coping_files_to_FACTCATfolder:
 # CLONING GITHUB
 ################
 
-#input: expand('tmp/{name}_query_taget_accesion_to_fatcat_list.tsv', name = initial_fasta_file_name_clean)
+
 rule clone_FATCAT_repository:
     output: 'git_repo_cloned/FATCAT/Install'
     shell: 'git clone https://github.com/GodzikLab/FATCAT-dist.git git_repo_cloned/FATCAT'
@@ -47,7 +47,6 @@ rule installing_FATCAT_repository:
     shell: '''
     cd git_repo_cloned/FATCAT/
     ./Install
-    
     '''
 
 
@@ -55,12 +54,6 @@ rule installing_FATCAT_repository:
 #################
 # USING FATCAT
 #################
-
-#ver de usar la funcion para levantar archivos y que esto sea mas rapdio
-#def get_gz_files(wildcards):
-#    return glob.glob("tmp/FATCAT_pdb_files/*.gz")
-
-
 
 rule FATCAT_aligment:
     input:
