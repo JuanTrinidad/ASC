@@ -47,11 +47,11 @@ rule download_kinetoplastea_annotation_info:
 
 rule final_table:
   input: 
-    SRBH = '../results/reciprocal_best_hit_SingleOrgApproach_TSV/rbh_all_in_one_file.tsv',
-    FATCATTMscore = 'report/toy_file_TMscores_from_TMalign_twisted_structure.tsv',
+    SRBH = '../results/reciprocal_best_hit_SingleOrgApproach_TSV/{all_sequence_fasta}_rbh_all_in_one_file.tsv',
+    FATCATTMscore = 'report/{all_sequence_fasta}_TMscores_from_TMalign_twisted_structure.tsv',
     annotation = 'protein_data_bases/annotation_info/Gene_annotation_info_from_uniprot_model_spp.tsv',
   output:
-    '../results/FINAL_TABLE.tsv'
+    '../results/{all_sequence_fasta}_FINAL_TABLE.tsv'
   conda:
     '../envs/env_pLDDT_mean_calc.yaml'
   script:

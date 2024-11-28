@@ -14,7 +14,7 @@
 
 rule downloading_and_coping_files_to_FACTCATfolder:
     input: 
-        file1 = '../results/reciprocal_best_hit_SingleOrgApproach_TSV/rbh_all_in_one_file.tsv',
+        file1 = '../results/reciprocal_best_hit_SingleOrgApproach_TSV/{all_sequence_fasta}_rbh_all_in_one_file.tsv',
     output: 
         tsv_to_match_pdbs_names = 'tmp/{all_sequence_fasta}_query_taget_accesion_to_fatcat_list.tsv'#, directory('tmp/FATCAT_pdb_files/')
     conda: 
