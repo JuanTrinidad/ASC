@@ -52,6 +52,8 @@ rule final_table:
     annotation = 'protein_data_bases/annotation_info/Gene_annotation_info_from_uniprot_model_spp.tsv',
   output:
     '../results/FINAL_TABLE.tsv'
+  conda:
+    '../envs/env_pLDDT_mean_calc.yaml'
   script:
     '../scripts/014_creating_final_table.py'
 
