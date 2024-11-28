@@ -69,7 +69,10 @@ include:'rules/03_FATCAT.smk'
 include:'rules/04_Downloading_annotation_from_uniprot.smk'
 
 rule all: 
-  input: f'tmp/{initial_fasta_file_name_clean}_extract_twisted_structures.out', f'report/{initial_fasta_file_name_clean}_TMscores_from_TMalign_twisted_structure.tsv'
+  input: f'tmp/{initial_fasta_file_name_clean}_extract_twisted_structures.out', 
+          f'report/{initial_fasta_file_name_clean}_TMscores_from_TMalign_twisted_structure.tsv', 
+          'protein_data_bases/annotation_info/Gene_annotation_info_from_uniprot_model_spp.tsv',
+          '../results/FINAL_TABLE.tsv'
   
   
   
