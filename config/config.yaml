@@ -40,7 +40,7 @@ mmseq2_query_sequences_clustering:
   similarity_type: 2
   
 cluster_filtering:
-  cluster_size: 0 #in the article we use 10 as threshold
+  cluster_size: 10 #in the article we use 10 as threshold
   
   
 downloading_from_AFDB:
@@ -70,4 +70,4 @@ foldseek_clustering_model_org_DB_parameters:
   evalue: !!float 1e-2
 
 FATCAT_top_N_hits_to_align:
-  top_N_hits: 1 #in the article we use 5 
+  top_N_hits: 5 #in the article we use 5 

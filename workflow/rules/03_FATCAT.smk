@@ -31,11 +31,17 @@ rule downloading_and_coping_files_to_FACTCATfolder:
 # CLONING GITHUB
 ################
 
-
 rule clone_FATCAT_repository:
-    output: 'git_repo_cloned/FATCAT/Install'
-    shell: 'git clone https://github.com/GodzikLab/FATCAT-dist.git git_repo_cloned/FATCAT'
-    
+    #input: 
+    #    expand('tmp/{all_sequence_fasta}_query_taget_accesion_to_fatcat_list.tsv', all_sequence_fasta=initial_fasta_file_name_clean)
+    output: 
+        directory('git_repo_cloned/FATCAT'), 'git_repo_cloned/FATCAT/Install'
+    shell: 
+        '''
+        if [ ! -d "git_repo_cloned/FATCAT" ]; then
+            git clone https://github.com/GodzikLab/FATCAT-dist.git git_repo_cloned/FATCAT
+        fi
+        '''   
     
 ###################
 # INSTALLING FATCAT
