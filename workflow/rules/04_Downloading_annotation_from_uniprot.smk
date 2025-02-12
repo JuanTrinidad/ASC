@@ -50,8 +50,12 @@ rule final_table:
     SRBH = '../results/reciprocal_best_hit_SingleOrgApproach_TSV/{all_sequence_fasta}_rbh_all_in_one_file.tsv',
     FATCATTMscore = 'report/{all_sequence_fasta}_TMscores_from_TMalign_twisted_structure.tsv',
     annotation = 'protein_data_bases/annotation_info/Gene_annotation_info_from_uniprot_model_spp.tsv',
+    pLDDT = 'report/{all_sequence_fasta}_ortholog_groups_x_sequence_clustering_x_UNIPROT.tsv',
+    cluster_file = 'report/{all_sequence_fasta}_Ortholog_group_to_geneID.tsv'
+
   output:
-    '../results/{all_sequence_fasta}_FINAL_TABLE.tsv'
+    '../results/{all_sequence_fasta}_FINAL_TABLE.tsv',
+    '../results/{all_sequence_fasta}_CLUSTER_EXTENSION_TABLE.tsv'
   conda:
     '../envs/env_pLDDT_mean_calc.yaml'
   script:
