@@ -49,4 +49,4 @@ Input Files:
 ### Running
 1. Clone the repository: git clone https://github.com/JuanTrinidad/ASC
 2. Adjust the parameters in the config file located in the config directory.
-3. Activate snakemake virtual enviroment (mamba) and execute the workflow using Snakemake `snakemake --snakefile workflow/snakemake_ASC.smk`
+3. Activate snakemake virtual enviroment (mamba) and execute the snakefile inside the workflow directory using Snakemake `snakemake --snakefile snakemake_ASC.smk`

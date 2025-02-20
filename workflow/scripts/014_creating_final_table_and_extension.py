@@ -27,9 +27,6 @@ df_merge = df_RBH.merge(df_TMscore_FATCAT, left_on='target_uniprot_accession', r
 
 df_merge = df_merge.merge(df_reference_org_annotation, left_on='target_uniprot_accession', right_on='Entry', how='left')
 
-# %%
-print(df_merge.shape)
-
 df_merge = df_cluster_info.merge(df_merge, right_on='query_uniprot_accession', left_on='pdb2', how='right').drop(columns=['pdb2_x'])
 
 
