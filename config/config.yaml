@@ -40,7 +40,7 @@ mmseq2_query_sequences_clustering:
   similarity_type: 2
   
 cluster_filtering:
-  cluster_size: 10 #in the article we use 10 as threshold
+  cluster_size: 1 #in the article we use 10 as threshold
   
   
 downloading_from_AFDB:
