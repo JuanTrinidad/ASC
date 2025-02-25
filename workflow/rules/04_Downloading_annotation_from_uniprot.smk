@@ -59,7 +59,7 @@ rule final_table:
   conda:
     '../envs/env_pLDDT_mean_calc.yaml'
   script:
-    '../scripts/014_creating_final_table.py'
+    '../scripts/014_creating_final_table_and_extension.py'
 
 
 
